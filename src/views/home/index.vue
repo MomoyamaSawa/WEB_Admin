@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view></router-view>
+    <h1>展示页</h1>
   </div>
 </template>
 

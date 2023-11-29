@@ -8,10 +8,12 @@ import gloablComponent from './components/index'
 // svg插件需要配置代码
 import 'virtual:svg-icons-register'
 import '@/styles/index.scss'
+import router from './router'
 
 const app = createApp(App)
 app.use(ElementPlus, {
   locale: zhCn,
 })
 app.use(gloablComponent)
+app.use(router)
 app.mount('#app')
