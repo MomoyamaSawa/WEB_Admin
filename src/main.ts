@@ -12,7 +12,7 @@ import router from './router'
 
 const app = createApp(App)
 app.use(ElementPlus, {
-  locale: zhCn,
+    locale: zhCn,
 })
 app.use(gloablComponent)
 app.use(router)
