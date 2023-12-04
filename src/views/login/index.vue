@@ -7,10 +7,7 @@
                     <h1>Hello</h1>
                     <h2>欢迎来到硅谷甄选</h2>
                     <el-form-item>
-                        <el-input
-                            :prefix-icon="User"
-                            v-model="loginInfo.username"
-                        ></el-input>
+                        <el-input :prefix-icon="User" v-model="loginInfo.username"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-input
@@ -21,13 +18,7 @@
                         ></el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button
-                            :loading="loading"
-                            class="login_btn"
-                            type="primary"
-                            size="default"
-                            @click="login"
-                        >
+                        <el-button :loading="loading" class="login_btn" type="primary" size="default" @click="login">
                             登录
                         </el-button>
                     </el-form-item>
