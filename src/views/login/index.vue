@@ -3,7 +3,7 @@
         <el-row>
             <el-col :span="12" :xs="0"></el-col>
             <el-col :span="12" :xs="24">
-                <el-from class="login_from">
+                <el-form class="login_form">
                     <h1>Hello</h1>
                     <h2>欢迎来到硅谷甄选</h2>
                     <el-form-item>
@@ -22,14 +22,16 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button
+                            :loading="loading"
                             class="login_btn"
                             type="primary"
                             size="default"
+                            @click="login"
                         >
                             登录
                         </el-button>
                     </el-form-item>
-                </el-from>
+                </el-form>
             </el-col>
         </el-row>
     </div>
@@ -37,12 +39,50 @@
 
 <script setup lang="ts">
 import { User, Lock } from '@element-plus/icons-vue'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import useUserStore from '@/store/modules/user'
+import { useRouter } from 'vue-router'
+import { ElNotification } from 'element-plus'
+// 用户相关的小仓库
+let userStore = useUserStore()
+// 变量控制按钮加载效果
+let loading = ref(false)
+// 获取路由器
+let $router = useRouter()
 // 收集账号与表单数据
 let loginInfo = reactive({
     username: 'admin',
     password: '111111',
 })
+
+const login = () => {
+    // 开始加载效果
+    loading.value = true
+    // 通知仓库发登录请求
+    userStore
+        .userLogin(loginInfo)
+        .then(() => {
+            // 跳转到首页
+            $router.push('/')
+            ElNotification({
+                title: '登录成功',
+                message: '欢迎回来',
+                type: 'success',
+            })
+        })
+        .catch((err) => {
+            console.log(err)
+            ElNotification({
+                title: '登录失败',
+                message: err.message,
+                type: 'error',
+            })
+        })
+        .finally(() => {
+            // 结束加载效果
+            loading.value = false
+        })
+}
 </script>
 
 <style scoped lang="scss">
@@ -53,8 +93,7 @@ let loginInfo = reactive({
     background-size: cover;
 }
 
-.login_from {
-    display: block;
+.login_form {
     position: relative;
     width: 80%;
     top: 30vh;
