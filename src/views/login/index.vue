@@ -3,13 +3,14 @@
         <el-row>
             <el-col :span="12" :xs="0"></el-col>
             <el-col :span="12" :xs="24">
-                <el-form class="login_form">
+                <!-- 登录表单 -->
+                <el-form class="login_form" :model="loginInfo" :rules="rules" ref="login_form">
                     <h1>Hello</h1>
                     <h2>欢迎来到硅谷甄选</h2>
-                    <el-form-item>
+                    <el-form-item prop="username">
                         <el-input :prefix-icon="User" v-model="loginInfo.username"></el-input>
                     </el-form-item>
-                    <el-form-item>
+                    <el-form-item prop="password">
                         <el-input
                             :prefix-icon="Lock"
                             v-model="loginInfo.password"
@@ -49,35 +50,53 @@ let loginInfo = reactive({
     username: 'admin',
     password: '111111',
 })
+// 表单校验需要的配置对象
+const rules = {
+    username: [
+        { required: true, message: '请输入用户名', trigger: 'blur' },
+        { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' },
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+    ],
+}
+// 获取表达组件
+const login_form = ref()
 
-// 登陆函数
+/**
+ * 登录函数
+ */
 const login = () => {
-    // 开始加载效果
-    loading.value = true
-    // 通知仓库发登录请求
-    userStore
-        .userLogin(loginInfo)
-        .then(() => {
-            // 跳转到首页
-            $router.push('/')
-            ElNotification({
-                title: getTime() + '好',
-                message: '欢迎回来',
-                type: 'success',
+    // 保证全部表单项都通过校验
+    login_form.value.validate().then(() => {
+        // 开始加载效果
+        loading.value = true
+        // 通知仓库发登录请求
+        userStore
+            .userLogin(loginInfo)
+            .then(() => {
+                // 跳转到首页
+                $router.push('/')
+                ElNotification({
+                    title: getTime() + '好',
+                    message: '欢迎回来',
+                    type: 'success',
+                })
             })
-        })
-        .catch((err) => {
-            console.log(err)
-            ElNotification({
-                title: '登录失败',
-                message: err.message,
-                type: 'error',
+            .catch((err) => {
+                console.log(err)
+                ElNotification({
+                    title: '登录失败',
+                    message: err.message,
+                    type: 'error',
+                })
             })
-        })
-        .finally(() => {
-            // 结束加载效果
-            loading.value = false
-        })
+            .finally(() => {
+                // 结束加载效果
+                loading.value = false
+            })
+    })
 }
 </script>
 
