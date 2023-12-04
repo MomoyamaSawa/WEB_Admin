@@ -40,9 +40,13 @@
 <script setup lang="ts">
 import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
+// 引入用户小仓库
 import useUserStore from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 import { ElNotification } from 'element-plus'
+// 引入获取当前时间段的函数
+import { getTime } from '@/utils/time'
+
 // 用户相关的小仓库
 let userStore = useUserStore()
 // 变量控制按钮加载效果
@@ -55,6 +59,7 @@ let loginInfo = reactive({
     password: '111111',
 })
 
+// 登陆函数
 const login = () => {
     // 开始加载效果
     loading.value = true
@@ -65,7 +70,7 @@ const login = () => {
             // 跳转到首页
             $router.push('/')
             ElNotification({
-                title: '登录成功',
+                title: getTime() + '好',
                 message: '欢迎回来',
                 type: 'success',
             })
