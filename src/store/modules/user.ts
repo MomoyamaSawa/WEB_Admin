@@ -3,23 +3,24 @@ import { defineStore } from 'pinia'
 // 引入接口
 import { reqLogin } from '@/api/user'
 // 引入数据类型
-import type { loginFormData } from '@/api/user/type'
-import Cookies from 'js-cookie'
+import type { loginFormData, loginResponseData } from '@/api/user/type'
+import type { UserStateData } from './types/types'
+import { getToken, setToken } from '@/utils/token'
 
 let useUserStore = defineStore('user', {
-    state: () => {
+    state: (): UserStateData => {
         return {
-            token: Cookies.get('TOKEN') || null,
+            token: getToken(),
         }
     },
     actions: {
         async userLogin(data: loginFormData) {
-            let result: any = await reqLogin(data)
+            let result: loginResponseData = await reqLogin(data)
             // 登陆成功：token
             if (result.code === 200) {
-                this.token = result.data.token
+                this.token = result.data.token || null
                 // 本地持久化存储一份
-                Cookies.set('TOKEN', result.data.token)
+                setToken(this.token)
                 // 保证当前async函数返回一个成功的promise
                 return Promise.resolve()
             }
