@@ -18,6 +18,7 @@ export const constRoutes = [
         meta: {
             title: 'layout',
             hidden: false,
+            icon: 'HomeFilled',
         },
         children: [
             {
@@ -26,6 +27,7 @@ export const constRoutes = [
                 meta: {
                     title: '首页',
                     hidden: false,
+                    icon: 'HomeFilled',
                 },
             },
         ],
