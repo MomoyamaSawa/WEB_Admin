@@ -6,11 +6,14 @@ import { reqLogin } from '@/api/user'
 import type { loginFormData, loginResponseData } from '@/api/user/type'
 import type { UserStateData } from './types/types'
 import { getToken, setToken } from '@/utils/token'
+// 引入路由
+import { constRoutes } from '@/router/routes'
 
 let useUserStore = defineStore('user', {
     state: (): UserStateData => {
         return {
             token: getToken(),
+            menuRoutes: constRoutes,
         }
     },
     actions: {

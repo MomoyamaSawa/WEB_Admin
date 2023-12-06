@@ -4,6 +4,8 @@ import { viteMockServe } from 'vite-plugin-mock'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
+// 增强setup语法糖功能
+import VueSetupExtend from 'vite-plugin-vue-setup-extend'
 export default defineConfig(({ command }) => {
     return {
         plugins: [
@@ -17,6 +19,7 @@ export default defineConfig(({ command }) => {
             viteMockServe({
                 localEnabled: command === 'serve', // 保证开发阶段可以使用 mock 接口
             }),
+            VueSetupExtend(),
         ],
         resolve: {
             alias: {
