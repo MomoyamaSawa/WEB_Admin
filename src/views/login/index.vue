@@ -34,7 +34,7 @@ import { User, Lock } from '@element-plus/icons-vue'
 import { reactive, ref } from 'vue'
 // 引入用户小仓库
 import useUserStore from '@/store/modules/user'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElNotification } from 'element-plus'
 // 引入获取当前时间段的函数
 import { getTime } from '@/utils/time'
@@ -67,6 +67,7 @@ const login_form = ref()
 /**
  * 登录函数
  */
+let $route = useRoute()
 const login = () => {
     // 保证全部表单项都通过校验
     login_form.value.validate().then(() => {
@@ -76,8 +77,9 @@ const login = () => {
         userStore
             .userLogin(loginInfo)
             .then(() => {
-                // 跳转到首页
-                $router.push('/')
+                // 跳转到首页，判断是否有重定向
+                let redirect = $route.query.redirect as string
+                $router.push({ path: redirect ? redirect : '/' })
                 ElNotification({
                     title: getTime() + '好',
                     message: '欢迎回来',

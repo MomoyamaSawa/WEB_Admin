@@ -8,3 +8,7 @@ export const setToken = (token: string | null) => {
 export const getToken = (): string => {
     return Cookies.get('TOKEN')
 }
+
+export const removeToken = () => {
+    Cookies.remove('TOKEN')
+}

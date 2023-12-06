@@ -5,7 +5,7 @@ import { reqLogin, reqUserInfo } from '@/api/user'
 // 引入数据类型
 import type { loginFormData, loginResponseData } from '@/api/user/type'
 import type { UserStateData } from './types/types'
-import { getToken, setToken } from '@/utils/token'
+import { getToken, setToken, removeToken } from '@/utils/token'
 // 引入路由
 import { constRoutes } from '@/router/routes'
 
@@ -43,6 +43,13 @@ let useUserStore = defineStore('user', {
                 this.username = result.data.checkUser.username
                 this.avatar = result.data.checkUser.avatar
             }
+        },
+        // 退出登录
+        userLogout() {
+            this.token = null
+            this.username = ''
+            this.avatar = ''
+            removeToken()
         },
     },
     getters: {},

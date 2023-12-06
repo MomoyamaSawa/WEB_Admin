@@ -13,7 +13,7 @@
         </span>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </template>
     </el-dropdown>
@@ -40,6 +40,17 @@ const fullScreen = () => {
 
 import useUserStore from '@/store/modules/user'
 let userStore = useUserStore()
+
+// 退出登录
+import { useRouter, useRoute } from 'vue-router'
+let $router = useRouter()
+let $route = useRoute()
+const logout = () => {
+    // 仓库中关于用户相关的数据清空
+    userStore.userLogout()
+    // 跳转到登陆页面，并且把当前页面的路径传递过去，登陆成功后跳转回来
+    $router.push({ path: '/login', query: { redirect: $route.path } })
+}
 </script>
 
 <style scoped></style>
