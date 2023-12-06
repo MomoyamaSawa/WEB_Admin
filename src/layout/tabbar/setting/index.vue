@@ -2,11 +2,11 @@
     <el-button type="primary" icon="Refresh" circle size="small" @click="updateRefresh"></el-button>
     <el-button type="primary" icon="FullScreen" circle size="small" @click="fullScreen"></el-button>
     <el-button type="primary" icon="Setting" circle size="small" @click=""></el-button>
-    <img src="/logo.png" style="width: 24; height: 24px; margin: 0px 10px" />
+    <img :src="userStore.avatar" style="width: 24px; height: 24px; margin: 0px 10px; border-radius: 50%" />
     <!-- 下拉菜单 -->
     <el-dropdown>
         <span class="el-dropdown-link">
-            admin
+            {{ userStore.username }}
             <el-icon class="el-icon--right">
                 <arrow-down />
             </el-icon>
@@ -37,6 +37,9 @@ const fullScreen = () => {
         document.documentElement.requestFullscreen()
     }
 }
+
+import useUserStore from '@/store/modules/user'
+let userStore = useUserStore()
 </script>
 
 <style scoped></style>
