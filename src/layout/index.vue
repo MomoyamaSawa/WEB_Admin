@@ -16,14 +16,16 @@
         <!-- 顶部导航 -->
         <div class="layout_tabbar">213</div>
         <!-- 内容区域 -->
-        <div class="layout_main">213</div>
+        <div class="layout_main">
+            <Main></Main>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import Logo from './logo/index.vue'
 import Menu from './menu/index.vue'
-
+import Main from './main/index.vue'
 // 获取用户相关小仓库
 import useUserStore from '@/store/modules/user'
 let userStore = useUserStore()
