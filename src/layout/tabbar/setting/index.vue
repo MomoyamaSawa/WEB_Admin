@@ -1,5 +1,5 @@
 <template>
-    <el-button type="primary" icon="Refresh" circle size="small" @click=""></el-button>
+    <el-button type="primary" icon="Refresh" circle size="small" @click="updateRefresh"></el-button>
     <el-button type="primary" icon="FullScreen" circle size="small" @click=""></el-button>
     <el-button type="primary" icon="Setting" circle size="small" @click=""></el-button>
     <img src="/logo.png" style="width: 24; height: 24px; margin: 0px 10px" />
@@ -19,6 +19,12 @@
     </el-dropdown>
 </template>
 
-<script setup lang="ts" name="Setting"></script>
+<script setup lang="ts" name="Setting">
+import userLayoutSettingStore from '@/store/modules/setting'
+const layoutSettingStore = userLayoutSettingStore()
+const updateRefresh = () => {
+    layoutSettingStore.refresh = !layoutSettingStore.refresh
+}
+</script>
 
 <style scoped></style>
