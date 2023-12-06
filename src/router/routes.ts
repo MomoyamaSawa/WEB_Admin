@@ -18,7 +18,6 @@ export const constRoutes = [
         // 直接跳到 home 中
         redirect: '/home',
         meta: {
-            title: 'layout',
             show: false,
         },
         children: [
@@ -52,6 +51,7 @@ export const constRoutes = [
             show: true,
             icon: 'Lock',
         },
+        redirect: '/acl/user',
         children: [
             {
                 path: '/acl/user',
@@ -94,6 +94,7 @@ export const constRoutes = [
             show: true,
             icon: 'Goods',
         },
+        redirect: '/product/trademark',
         children: [
             {
                 path: '/product/trademark',

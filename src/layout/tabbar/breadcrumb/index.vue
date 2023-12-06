@@ -4,8 +4,17 @@
     </el-icon>
     <!-- 左侧面包屑 -->
     <el-breadcrumb separator-icon="ArrowRight">
-        <el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
-        <el-breadcrumb-item><a href="/">promotion management</a></el-breadcrumb-item>
+        <el-breadcrumb-item
+            v-for="(item, index) in $route.matched"
+            :key="index"
+            v-show="item.meta.title"
+            :to="item.path"
+        >
+            <el-icon>
+                <component :is="item.meta.icon"></component>
+            </el-icon>
+            <span>{{ item.meta.title }}</span>
+        </el-breadcrumb-item>
     </el-breadcrumb>
 </template>
 
