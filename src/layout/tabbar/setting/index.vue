@@ -19,6 +19,6 @@
     </el-dropdown>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts" name="Setting"></script>
 
 <style scoped></style>

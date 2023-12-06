@@ -1,30 +1,35 @@
 <template>
     <div class="layout_container">
         <!-- 左侧菜单 -->
-        <div class="layout_slider">
+        <div class="layout_slider" :class="{ fold: layoutSettingStore.fold ? true : false }">
             <Logo></Logo>
             <!-- 展示菜单 -->
             <!-- 滚动组件 -->
             <el-scrollbar class="scrollbar">
                 <!-- 菜单组件 -->
-                <el-menu background-color="#001529" text-color="white" :default-active="$route.path">
+                <el-menu
+                    background-color="#001529"
+                    text-color="white"
+                    :default-active="$route.path"
+                    :collapse="layoutSettingStore.fold ? true : false"
+                >
                     <!-- 根据路由动态生成菜单 -->
                     <Menu :menuList="userStore.menuRoutes"></Menu>
                 </el-menu>
             </el-scrollbar>
         </div>
         <!-- 顶部导航 -->
-        <div class="layout_tabbar">
+        <div class="layout_tabbar" :class="{ fold: layoutSettingStore.fold ? true : false }">
             <Tabbar></Tabbar>
         </div>
         <!-- 内容区域 -->
-        <div class="layout_main">
+        <div class="layout_main" :class="{ fold: layoutSettingStore.fold ? true : false }">
             <Main></Main>
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Layout">
 import Logo from './logo/index.vue'
 import Menu from './menu/index.vue'
 import Main from './main/index.vue'
@@ -32,8 +37,10 @@ import Tabbar from './tabbar/index.vue'
 import { useRoute } from 'vue-router'
 // 获取用户相关小仓库
 import useUserStore from '@/store/modules/user'
+import useLayoutSettingStore from '@/store/modules/setting'
 // 用于菜单激活
 let userStore = useUserStore()
+let layoutSettingStore = useLayoutSettingStore()
 let $route = useRoute()
 </script>
 
@@ -46,6 +53,7 @@ let $route = useRoute()
         width: $base-menu-width;
         height: 100vh;
         background: $base-menu-bg;
+        transition: all 0.3s;
 
         .scrollbar {
             width: 100%;
@@ -56,6 +64,10 @@ let $route = useRoute()
                 border-right: none;
             }
         }
+
+        &.fold {
+            width: $base-menu-min-width;
+        }
     }
 
     .layout_tabbar {
@@ -64,6 +76,12 @@ let $route = useRoute()
         height: $base-tabbar-height;
         top: 0px;
         left: $base-menu-width;
+        transition: all 0.3s;
+
+        &.fold {
+            width: calc(100vw - #{$base-menu-min-width});
+            left: $base-menu-min-width;
+        }
     }
 
     .layout_main {
@@ -76,6 +94,12 @@ let $route = useRoute()
         padding: 20px;
         // 滚动条
         overflow: auto;
+        transition: all 0.3s;
+
+        &.fold {
+            width: calc(100vw - #{$base-menu-min-width});
+            left: $base-menu-min-width;
+        }
     }
 }
 </style>

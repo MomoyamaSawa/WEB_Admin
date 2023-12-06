@@ -7,7 +7,7 @@
     </router-view>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts" name="Main"></script>
 
 <style scoped lang="scss">
 .fade-enter-from {
