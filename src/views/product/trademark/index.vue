@@ -46,10 +46,11 @@ let pageSize = ref<number>(3)
  */
 import { reqTrademarkList } from '@/api/product/trademark'
 import { onMounted } from 'vue'
+import type { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
 let total = ref<number>(0)
-let trademarkArr = ref<any[]>([])
+let trademarkArr = ref<Records>([])
 const gettrademarkList = () => {
-    reqTrademarkList(pageNo.value, pageSize.value).then((res) => {
+    reqTrademarkList(pageNo.value, pageSize.value).then((res: TradeMarkResponseData) => {
         total.value = res.data.total
         trademarkArr.value = res.data.records
     })

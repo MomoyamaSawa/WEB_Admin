@@ -14,5 +14,6 @@ enum API {
  * page: 当前页码
  * limit: 每页显示条数
  */
+import type { TradeMarkResponseData } from './type'
 export const reqTrademarkList = (page: number, limit: number) =>
-    request.get<any, any>(API.TRADEMARD_URL + `${page}/${limit}`)
+    request.get<any, TradeMarkResponseData>(API.TRADEMARD_URL + `${page}/${limit}`)
