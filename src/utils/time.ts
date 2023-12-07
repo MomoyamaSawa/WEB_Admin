@@ -1,6 +1,5 @@
 // 获取时间结果
 export const getTime = (): string => {
-    console.log('getTime')
     let hours = new Date().getHours()
     if (hours >= 6 && hours < 9) {
         return '早上'

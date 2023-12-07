@@ -48,7 +48,7 @@ let $router = useRouter()
 // 收集账号与表单数据
 let loginInfo = reactive({
     username: 'admin',
-    password: '111111',
+    password: 'atguigu123',
 })
 // 表单校验需要的配置对象
 const rules = {

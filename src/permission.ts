@@ -9,12 +9,9 @@ import pinia from './store'
 import setting from './setting'
 
 let userStore = useUserStore(pinia)
-console.log(userStore)
-
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
     nprogress.start()
-    document.title = `${setting.title} - ${to.meta.title}`
     let token = userStore.token
     if (token) {
         if (to.path === '/login') {
@@ -31,8 +28,9 @@ router.beforeEach((to, from, next) => {
                     })
                     .catch(() => {
                         // token过期 || 用户手动修改token
-                        userStore.userLogout()
-                        next({ path: '/login', query: { redirect: to.path } })
+                        userStore.userLogout().finally(() => {
+                            next({ path: '/login', query: { redirect: to.path } })
+                        })
                     })
             }
         }
@@ -43,10 +41,10 @@ router.beforeEach((to, from, next) => {
             next({ path: '/login', query: { redirect: to.path } })
         }
     }
-    next()
 })
 
 // 全局后置守卫
 router.afterEach((to, from) => {
+    document.title = `${setting.title} - ${to.meta.title}`
     nprogress.done()
 })

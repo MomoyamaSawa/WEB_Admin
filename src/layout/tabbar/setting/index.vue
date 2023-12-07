@@ -47,9 +47,10 @@ let $router = useRouter()
 let $route = useRoute()
 const logout = () => {
     // 仓库中关于用户相关的数据清空
-    userStore.userLogout()
-    // 跳转到登陆页面，并且把当前页面的路径传递过去，登陆成功后跳转回来
-    $router.push({ path: '/login', query: { redirect: $route.path } })
+    userStore.userLogout().finally(() => {
+        // 跳转到登陆页面，并且把当前页面的路径传递过去，登陆成功后跳转回来
+        $router.push({ path: '/login', query: { redirect: $route.path } })
+    })
 }
 </script>
 
