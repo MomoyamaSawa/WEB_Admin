@@ -42,6 +42,9 @@ let useUserStore = defineStore('user', {
             if (result.code === 200) {
                 this.username = result.data.checkUser.username
                 this.avatar = result.data.checkUser.avatar
+                return Promise.resolve()
+            } else {
+                return Promise.reject(new Error(result.message))
             }
         },
         // 退出登录
