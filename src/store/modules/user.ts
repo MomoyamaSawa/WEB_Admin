@@ -39,7 +39,6 @@ let useUserStore = defineStore('user', {
         // 获取用户信息存到仓库里
         async userInfo() {
             let result: userInfoReponseData = await reqUserInfo()
-            console.log(result)
             if (result.code === 200) {
                 this.username = result.data.name
                 this.avatar = result.data.avatar
