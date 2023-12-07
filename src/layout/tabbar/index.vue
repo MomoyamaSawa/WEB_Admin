@@ -21,8 +21,8 @@ import Setting from './setting/index.vue'
     display: flex;
     // 一左一右
     justify-content: space-between;
-    // 线性渐变
-    background-image: linear-gradient(to right, #6dd5ed, #2193b0);
+    background: white;
+    border-bottom: 1px solid #ccc;
 
     .tabbar_left {
         display: flex;
