@@ -28,13 +28,13 @@
             :background="true"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
-            @size-change=""
-            @current-change=""
+            @size-change="sizeChange"
+            @current-change="changePageNo"
         />
     </el-card>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="Trademark">
 import { ref } from 'vue'
 // 当前页码
 let pageNo = ref<number>(1)
@@ -49,15 +49,27 @@ import { onMounted } from 'vue'
 import type { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
 let total = ref<number>(0)
 let trademarkArr = ref<Records>([])
-const gettrademarkList = () => {
+const getTrademarkList = () => {
     reqTrademarkList(pageNo.value, pageSize.value).then((res: TradeMarkResponseData) => {
         total.value = res.data.total
         trademarkArr.value = res.data.records
     })
 }
 onMounted(() => {
-    gettrademarkList()
+    getTrademarkList()
 })
+
+/**
+ * 页码改变时触发
+ */
+const changePageNo = () => {
+    getTrademarkList()
+}
+const sizeChange = () => {
+    // 页码改变时，重置为第一页
+    pageNo.value = 1
+    getTrademarkList()
+}
 </script>
 
 <style scoped lang="scss"></style>
