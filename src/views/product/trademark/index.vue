@@ -36,17 +36,17 @@
     <el-dialog v-model="isShowDialog" icon="" title="添加品牌">
         <el-form style="width: 80%">
             <el-form-item label-width="80px" label="品牌名称">
-                <el-input placeholder="请输入品牌名称"></el-input>
+                <el-input v-model="trademarkparams.tmName" placeholder="请输入品牌名称"></el-input>
             </el-form-item>
             <el-form-item label-width="80px" label="品牌LOGO">
                 <el-upload
                     class="avatar-uploader"
-                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                    action="/api/admin/product/fileUpload"
                     :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload"
+                    :on-success="handleAvatarSucess"
+                    :before-upload="handleAvatarUpload"
                 >
-                    <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                    <img v-if="trademarkparams.logoUrl" :src="trademarkparams.logoUrl" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
                     </el-icon>
@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts" name="Trademark">
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 // 当前页码
 let pageNo = ref<number>(1)
 // 每页显示的条数
@@ -112,6 +112,26 @@ const cancel = () => {
 }
 const confirm = () => {
     isShowDialog.value = false
+}
+import type { TradeMark } from '@/api/product/trademark/type.ts'
+import { ElMessage } from 'element-plus'
+let trademarkparams = reactive<TradeMark>({
+    tmName: '',
+    logoUrl: '',
+})
+// 上传文件之前的约束
+const handleAvatarUpload = (rawFile: any) => {
+    if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png' && rawFile.type !== 'image/gif') {
+        ElMessage.error('上传图片只能是 JPG/PNG/GIF 格式!')
+        return false
+    } else if (rawFile.size > 1024 * 1024 * 4) {
+        ElMessage.error('上传图片大小不能超过 4MB!')
+        return false
+    }
+    return true
+}
+const handleAvatarSucess = (res: any, file: any) => {
+    trademarkparams.logoUrl = res.data
 }
 </script>
 
