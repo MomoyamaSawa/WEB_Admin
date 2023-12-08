@@ -1,9 +1,10 @@
 // 注册components文件夹内部全部全局组件
 import SvgIcon from './SvgIcon/index.vue'
+import Category from './Category/index.vue'
 import type { App, Component } from 'vue'
 // 引入全部的elementUI组件
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-const components: { [name: string]: Component } = { SvgIcon }
+const components: { [name: string]: Component } = { SvgIcon, Category }
 export default {
     install(app: App) {
         // 注册项目全部全局组件
