@@ -13,8 +13,8 @@
                 </template>
             </el-table-column>
             <el-table-column label="操作">
-                <template #>
-                    <el-button type="primary" size="small" icon="Edit" @click="updateTrademark"></el-button>
+                <template #="{ row }">
+                    <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)"></el-button>
                     <el-button type="primary" size="small" icon="Delete" @click=""></el-button>
                 </template>
             </el-table-column>
@@ -26,14 +26,14 @@
             :page-sizes="[3, 5, 7, 9]"
             :small="true"
             :background="true"
-            layout="total, sizes, prev, pager, next, jumper"
+            layout="prev,pager,next,jumper,->,sizes,total"
             :total="total"
             @size-change="sizeChange"
             @current-change="changePageNo"
         />
     </el-card>
     <!-- 对话框组件 -->
-    <el-dialog v-model="isShowDialog" icon="" title="添加品牌">
+    <el-dialog v-model="isShowDialog" icon="" :title="trademarkparams.id ? '修改品牌' : '添加品牌'">
         <el-form style="width: 80%">
             <el-form-item label-width="80px" label="品牌名称">
                 <el-input v-model="trademarkparams.tmName" placeholder="请输入品牌名称"></el-input>
@@ -104,13 +104,16 @@ import { reqAddOrUpdateTrademark } from '@/api/product/trademark'
 let isShowDialog = ref<boolean>(false)
 const addTrademark = () => {
     // 收集数据之前重置表单
-    trademarkparams = reactive<TradeMark>({
-        tmName: '',
-        logoUrl: '',
-    })
+    trademarkparams.id = 0
+    trademarkparams.tmName = ''
+    trademarkparams.logoUrl = ''
     isShowDialog.value = true
 }
-const updateTrademark = () => {
+const updateTrademark = (row: TradeMark) => {
+    // 注意这里收集了 id 哦
+    trademarkparams.id = row.id
+    trademarkparams.tmName = row.tmName
+    trademarkparams.logoUrl = row.logoUrl
     isShowDialog.value = true
 }
 const cancel = () => {
@@ -119,12 +122,12 @@ const cancel = () => {
 const confirm = () => {
     reqAddOrUpdateTrademark(trademarkparams)
         .then(() => {
-            ElMessage.success('添加品牌成功')
+            ElMessage.success(trademarkparams.id ? '修改品牌成功' : '添加品牌成功')
             getTrademarkList()
             isShowDialog.value = false
         })
         .catch((err) => {
-            ElMessage.error(`添加品牌失败: ${err.message}`)
+            ElMessage.error(`操作失败: ${err.message}`)
         })
 }
 import type { TradeMark } from '@/api/product/trademark/type.ts'
