@@ -15,7 +15,16 @@
             <el-table-column label="操作">
                 <template #="{ row }">
                     <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)"></el-button>
-                    <el-button type="primary" size="small" icon="Delete" @click=""></el-button>
+                    <el-popconfirm
+                        :title="`您确定要删除${row.tmName}吗`"
+                        width="250px"
+                        icon="Delete"
+                        @confirm="deleteTrademark(row.id)"
+                    >
+                        <template #reference>
+                            <el-button size="small" icon="Delete"></el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
@@ -75,7 +84,10 @@ import { onMounted } from 'vue'
 import type { Records, TradeMarkResponseData } from '@/api/product/trademark/type.ts'
 let total = ref<number>(0)
 let trademarkArr = ref<Records>([])
-const getTrademarkList = () => {
+const getTrademarkList = (pageNum: number = 0) => {
+    if (pageNum) {
+        pageNo.value = pageNum
+    }
     reqTrademarkList(pageNo.value, pageSize.value).then((res: TradeMarkResponseData) => {
         total.value = res.data.total
         trademarkArr.value = res.data.records
@@ -95,6 +107,22 @@ const sizeChange = () => {
     // 页码改变时，重置为第一页
     pageNo.value = 1
     getTrademarkList()
+}
+
+/**
+ * 删除品牌
+ */
+import { reqDeleteTrademark } from '@/api/product/trademark'
+const deleteTrademark = (id: number) => {
+    reqDeleteTrademark(id)
+        .then(() => {
+            ElMessage.success('删除品牌成功')
+            // 注意页码的跳转
+            getTrademarkList(trademarkArr.value.length === 1 ? pageNo.value - 1 : pageNo.value)
+        })
+        .catch(() => {
+            ElMessage.error('删除品牌失败')
+        })
 }
 
 /**
