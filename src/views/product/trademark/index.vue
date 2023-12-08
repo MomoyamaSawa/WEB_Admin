@@ -34,11 +34,11 @@
     </el-card>
     <!-- 对话框组件 -->
     <el-dialog v-model="isShowDialog" icon="" :title="trademarkparams.id ? '修改品牌' : '添加品牌'">
-        <el-form style="width: 80%">
-            <el-form-item label-width="80px" label="品牌名称">
+        <el-form ref="elfrom" :model="trademarkparams" :rules="rules" style="width: 80%">
+            <el-form-item label-width="100px" label="品牌名称" prop="tmName">
                 <el-input v-model="trademarkparams.tmName" placeholder="请输入品牌名称"></el-input>
             </el-form-item>
-            <el-form-item label-width="80px" label="品牌LOGO">
+            <el-form-item label-width="100px" label="品牌LOGO" prop="logoUrl">
                 <el-upload
                     class="avatar-uploader"
                     action="/api/admin/product/fileUpload"
@@ -53,15 +53,15 @@
                 </el-upload>
             </el-form-item>
         </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button @click="cancel">取 消</el-button>
-            <el-button type="primary" @click="confirm">确 定</el-button>
-        </span>
+        <template #footer>
+            <el-button size="default" @click="cancel">取消</el-button>
+            <el-button type="primary" size="default" @click="confirm">确定</el-button>
+        </template>
     </el-dialog>
 </template>
 
 <script setup lang="ts" name="Trademark">
-import { ref, reactive } from 'vue'
+import { ref, reactive, nextTick } from 'vue'
 // 当前页码
 let pageNo = ref<number>(1)
 // 每页显示的条数
@@ -102,11 +102,37 @@ const sizeChange = () => {
  */
 import { reqAddOrUpdateTrademark } from '@/api/product/trademark'
 let isShowDialog = ref<boolean>(false)
+// 自定义校验功能
+const validateTmName = (rule: any, value: string, callback: any) => {
+    if (value.trim().length >= 2) {
+        callback()
+    } else {
+        callback(new Error('品牌名称位数必须大于等于两位'))
+    }
+}
+const validatelogoUrl = (rule: any, value: string, callback: any) => {
+    if (value) {
+        callback()
+    } else {
+        callback(new Error('品牌LOGO不能为空'))
+    }
+}
+// 获取 el-from 表单
+let elfrom = ref()
+const rules = {
+    tmName: [{ required: true, trigger: 'blur', validator: validateTmName }],
+    // 文本框触发不了触发，我们在下面的 confirm 中触发
+    logoUrl: [{ required: true, validator: validatelogoUrl }],
+}
 const addTrademark = () => {
     // 收集数据之前重置表单
     trademarkparams.id = 0
     trademarkparams.tmName = ''
     trademarkparams.logoUrl = ''
+    // 清除校验结果
+    nextTick(() => {
+        elfrom.value.clearValidate()
+    })
     isShowDialog.value = true
 }
 const updateTrademark = (row: TradeMark) => {
@@ -115,20 +141,27 @@ const updateTrademark = (row: TradeMark) => {
     trademarkparams.tmName = row.tmName
     trademarkparams.logoUrl = row.logoUrl
     isShowDialog.value = true
+    // 清除校验结果
+    nextTick(() => {
+        elfrom.value.clearValidate()
+    })
 }
 const cancel = () => {
     isShowDialog.value = false
 }
 const confirm = () => {
-    reqAddOrUpdateTrademark(trademarkparams)
-        .then(() => {
-            ElMessage.success(trademarkparams.id ? '修改品牌成功' : '添加品牌成功')
-            getTrademarkList()
-            isShowDialog.value = false
-        })
-        .catch((err) => {
-            ElMessage.error(`操作失败: ${err.message}`)
-        })
+    // 整个表单校验
+    elfrom.value.validate().then(() => {
+        reqAddOrUpdateTrademark(trademarkparams)
+            .then(() => {
+                ElMessage.success(trademarkparams.id ? '修改品牌成功' : '添加品牌成功')
+                getTrademarkList()
+                isShowDialog.value = false
+            })
+            .catch((err) => {
+                ElMessage.error(`操作失败: ${err.message}`)
+            })
+    })
 }
 import type { TradeMark } from '@/api/product/trademark/type.ts'
 import { ElMessage } from 'element-plus'
@@ -145,6 +178,8 @@ const handleAvatarUpload = (rawFile: any) => {
         ElMessage.error('上传图片大小不能超过 4MB!')
         return false
     }
+    // 清除校验结果
+    elfrom.value.clearValidate('logoUrl')
     return true
 }
 const handleAvatarSucess = (res: any, file: any) => {
@@ -157,10 +192,6 @@ const handleAvatarSucess = (res: any, file: any) => {
     width: 178px;
     height: 178px;
     display: block;
-}
-
-.dialog-footer button:first-child {
-    margin-right: 10px;
 }
 </style>
 
