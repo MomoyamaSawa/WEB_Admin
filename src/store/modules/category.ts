@@ -9,6 +9,8 @@ let useCategoryStore = defineStore('Category', {
             c2Arr: [],
             c3Arr: [],
             c1Id: '',
+            c2Id: '',
+            c3Id: '',
         }
     },
     getters: {},
@@ -16,6 +18,16 @@ let useCategoryStore = defineStore('Category', {
         getC1() {
             reqC1().then((res: CategoryResponseData) => {
                 this.c1Arr = res.data
+            })
+        },
+        getC2(category1Id: number | string) {
+            reqC2(category1Id).then((res: CategoryResponseData) => {
+                this.c2Arr = res.data
+            })
+        },
+        getC3(category2Id: number | string) {
+            reqC3(category2Id).then((res: CategoryResponseData) => {
+                this.c3Arr = res.data
             })
         },
     },

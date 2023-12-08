@@ -14,4 +14,6 @@ export interface CategoryStateData {
     c2Arr: Categoryobj[]
     c3Arr: Categoryobj[]
     c1Id: string | number
+    c2Id: string | number
+    c3Id: string | number
 }
