@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
 import { reqC1, reqC2, reqC3 } from '@/api/product/attr'
-let userCategoryStore = defineStore('Category', {
-    state: () => {
+import type { CategoryResponseData } from '@/api/product/attr/type'
+import type { CategoryStateData } from '@/store/modules/types/types'
+let useCategoryStore = defineStore('Category', {
+    state: (): CategoryStateData => {
         return {
             c1Arr: [],
             c2Arr: [],
@@ -12,11 +14,11 @@ let userCategoryStore = defineStore('Category', {
     getters: {},
     actions: {
         getC1() {
-            reqC1().then((res: any) => {
+            reqC1().then((res: CategoryResponseData) => {
                 this.c1Arr = res.data
             })
         },
     },
 })
 
-export default userCategoryStore
+export default useCategoryStore

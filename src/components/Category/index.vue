@@ -31,13 +31,13 @@
 
 <script setup lang="ts" name="Category">
 import { onMounted } from 'vue'
-import { userCategoryStore } from '@/store/modules/category'
-let categoryStore = userCategoryStore()
+import useCategoryStore from '@/store/modules/category'
+let categoryStore = useCategoryStore()
 onMounted(async () => {
     getC1()
 })
 const getC1 = () => {
-    userCategoryStore.getC1()
+    categoryStore.getC1()
 }
 </script>
 
