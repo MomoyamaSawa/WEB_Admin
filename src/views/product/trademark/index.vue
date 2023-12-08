@@ -100,8 +100,14 @@ const sizeChange = () => {
 /**
  * 控制对话框
  */
+import { reqAddOrUpdateTrademark } from '@/api/product/trademark'
 let isShowDialog = ref<boolean>(false)
 const addTrademark = () => {
+    // 收集数据之前重置表单
+    trademarkparams = reactive<TradeMark>({
+        tmName: '',
+        logoUrl: '',
+    })
     isShowDialog.value = true
 }
 const updateTrademark = () => {
@@ -111,7 +117,15 @@ const cancel = () => {
     isShowDialog.value = false
 }
 const confirm = () => {
-    isShowDialog.value = false
+    reqAddOrUpdateTrademark(trademarkparams)
+        .then(() => {
+            ElMessage.success('添加品牌成功')
+            getTrademarkList()
+            isShowDialog.value = false
+        })
+        .catch((err) => {
+            ElMessage.error(`添加品牌失败: ${err.message}`)
+        })
 }
 import type { TradeMark } from '@/api/product/trademark/type.ts'
 import { ElMessage } from 'element-plus'
@@ -140,6 +154,10 @@ const handleAvatarSucess = (res: any, file: any) => {
     width: 178px;
     height: 178px;
     display: block;
+}
+
+.dialog-footer button:first-child {
+    margin-right: 10px;
 }
 </style>
 
