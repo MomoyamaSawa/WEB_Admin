@@ -50,13 +50,23 @@
                             @blur="toLook(row, $index)"
                             v-model="row.valueName"
                             placeholder="请输入属性值名称"
+                            :ref="(vc: any) => (inputArr[$index] = vc)"
                         ></el-input>
-                        <div v-else @click="toEdit(row)">
+                        <div v-else @click="toEdit(row, $index)">
                             {{ row.valueName }}
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="属性值操作"></el-table-column>
+                <el-table-column label="属性值操作">
+                    <template #default="{ row, $index }">
+                        <el-button
+                            type="danger"
+                            size="small"
+                            icon="Delete"
+                            @click="attrParams.attrValueList.splice($index, 1)"
+                        ></el-button>
+                    </template>
+                </el-table-column>
             </el-table>
             <el-button
                 type="primary"
@@ -74,8 +84,7 @@
 <script setup lang="ts" name="Attr">
 import useCategoryStore from '@/store/modules/category'
 let categoryStore = useCategoryStore()
-
-import { watch, reactive, ref } from 'vue'
+import { watch, reactive, ref, nextTick } from 'vue'
 import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr'
 import type { AttrResponseData, AttrList, Attr, AttrValue } from '@/api/product/attr/type'
 import { ElMessage } from 'element-plus'
@@ -128,6 +137,10 @@ const addAttrValue = () => {
         valueName: '',
         flag: true,
     })
+    // 获取最后的input聚焦
+    nextTick(() => {
+        inputArr.value[inputArr.value.length - 1].focus()
+    })
 }
 const save = () => {
     // 收集参数
@@ -160,9 +173,16 @@ const toLook = (row: AttrValue, index: number) => {
     })
     row.flag = false
 }
-const toEdit = (row: AttrValue) => {
+const toEdit = (row: AttrValue, index: number) => {
     row.flag = true
+    // 注意这边flag刚编程true，dom刚更新，所以要等待dom更新完成后再聚焦
+    nextTick(() => {
+        inputArr.value[index].focus()
+    })
 }
+
+// 表单聚焦
+let inputArr = ref<any[]>([])
 </script>
 
 <style scoped lang="scss"></style>
