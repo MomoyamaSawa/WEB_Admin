@@ -43,13 +43,29 @@
             <el-table border style="margin: 10px 0px" :data="attrParams.attrValueList">
                 <el-table-column label="序号" width="80px" type="index" align="center"></el-table-column>
                 <el-table-column label="属性值名称">
-                    <template #default="{ row }">
-                        <el-input v-model="row.valueName" placeholder="请输入属性值名称"></el-input>
+                    <!-- 编辑查看模式切换 -->
+                    <template #default="{ row, $index }">
+                        <el-input
+                            v-if="row.flag"
+                            @blur="toLook(row, $index)"
+                            v-model="row.valueName"
+                            placeholder="请输入属性值名称"
+                        ></el-input>
+                        <div v-else @click="toEdit(row)">
+                            {{ row.valueName }}
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column label="属性值操作"></el-table-column>
             </el-table>
-            <el-button type="primary" size="default" @click="save">保存</el-button>
+            <el-button
+                type="primary"
+                size="default"
+                @click="save"
+                :disabled="attrParams.attrValueList.length > 0 ? false : true"
+            >
+                保存
+            </el-button>
             <el-button size="default" @click="cancel">取消</el-button>
         </div>
     </el-card>
@@ -61,7 +77,7 @@ let categoryStore = useCategoryStore()
 
 import { watch, reactive, ref } from 'vue'
 import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr'
-import type { AttrResponseData, AttrList, Attr } from '@/api/product/attr/type'
+import type { AttrResponseData, AttrList, Attr, AttrValue } from '@/api/product/attr/type'
 import { ElMessage } from 'element-plus'
 let attrArr = reactive({ list: [] as AttrList })
 watch(
@@ -110,6 +126,7 @@ let attrParams = reactive<Attr>({
 const addAttrValue = () => {
     attrParams.attrValueList.push({
         valueName: '',
+        flag: true,
     })
 }
 const save = () => {
@@ -123,6 +140,28 @@ const save = () => {
         .catch((err: any) => {
             ElMessage.error(attrParams.id ? '修改失败' : '添加失败')
         })
+}
+
+// 编辑查看模式切换
+const toLook = (row: AttrValue, index: number) => {
+    // 判断用户有没有输入名字
+    if (row.valueName.trim() == '') {
+        ElMessage.error('请输入属性值名称')
+        attrParams.attrValueList.splice(index, 1)
+        return
+    }
+    // 属性值不能重复
+    attrParams.attrValueList.forEach((item: AttrValue, i: number) => {
+        if (i != index && item.valueName == row.valueName) {
+            ElMessage.error('属性值不能重复')
+            attrParams.attrValueList.splice(index, 1)
+            return
+        }
+    })
+    row.flag = false
+}
+const toEdit = (row: AttrValue) => {
+    row.flag = true
 }
 </script>
 
