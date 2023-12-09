@@ -17,9 +17,17 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="120px">
-                    <template #default="{ row }">
+                    <template #default="{ row, $index }">
                         <el-button type="primary" size="small" icon="Edit" @click="updateAttr(row)"></el-button>
-                        <el-button type="danger" size="small" icon="Delete"></el-button>
+                        <el-popconfirm
+                            :title="`你确认删除${row.attrName}吗`"
+                            @confirm="deleteAttr(row.id)"
+                            width="200px"
+                        >
+                            <template #reference>
+                                <el-button type="danger" size="small" icon="Delete"></el-button>
+                            </template>
+                        </el-popconfirm>
                     </template>
                 </el-table-column>
             </el-table>
@@ -84,8 +92,8 @@
 <script setup lang="ts" name="Attr">
 import useCategoryStore from '@/store/modules/category'
 let categoryStore = useCategoryStore()
-import { watch, reactive, ref, nextTick } from 'vue'
-import { reqAttr, reqAddOrUpdateAttr } from '@/api/product/attr'
+import { watch, reactive, ref, nextTick, onBeforeUnmount } from 'vue'
+import { reqAttr, reqAddOrUpdateAttr, reqDeleteAttr } from '@/api/product/attr'
 import type { AttrResponseData, AttrList, Attr, AttrValue } from '@/api/product/attr/type'
 import { ElMessage } from 'element-plus'
 let attrArr = reactive({ list: [] as AttrList })
@@ -185,6 +193,23 @@ const toEdit = (row: AttrValue, index: number) => {
 
 // 表单聚焦
 let inputArr = ref<any[]>([])
+
+// 删除
+const deleteAttr = (attrId: number) => {
+    reqDeleteAttr(attrId)
+        .then((res: any) => {
+            ElMessage.success('删除成功')
+            getAttr()
+        })
+        .catch((err: any) => {
+            ElMessage.error('删除失败')
+        })
+}
+
+// 当路由切换时候，把仓库中的分类数据清空
+onBeforeUnmount(() => {
+    categoryStore.$reset()
+})
 </script>
 
 <style scoped lang="scss"></style>
