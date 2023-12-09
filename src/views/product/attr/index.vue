@@ -18,7 +18,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="120px">
                     <template #default="{ row }">
-                        <el-button type="primary" size="small" icon="Edit" @click="updateAttr"></el-button>
+                        <el-button type="primary" size="small" icon="Edit" @click="updateAttr(row)"></el-button>
                         <el-button type="danger" size="small" icon="Delete"></el-button>
                     </template>
                 </el-table-column>
@@ -107,7 +107,7 @@ const getAttr = () => {
 }
 
 // 控制卡片内容切换
-let scene = ref<number>(1)
+let scene = ref<number>(0)
 const addAttr = () => {
     // 每一次点击时清空数据
     Object.assign(attrParams, {
@@ -120,8 +120,10 @@ const addAttr = () => {
     attrParams.categoryId = categoryStore.c3Id
     scene.value = 1
 }
-const updateAttr = () => {
+const updateAttr = (row: Attr) => {
     scene.value = 1
+    // 填入已有属性和属性值（注意assign是浅拷贝！JSON方法深拷贝）
+    Object.assign(attrParams, JSON.parse(JSON.stringify(row)))
 }
 const cancel = () => {
     scene.value = 0
