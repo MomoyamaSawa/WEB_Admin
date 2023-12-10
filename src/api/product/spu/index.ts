@@ -8,6 +8,7 @@ import type {
     SpuImageResponseData,
     SpuSaleAttrResponseData,
     HasSaleAttrResponseData,
+    SpuData,
 } from './type'
 // API 枚举,
 enum API {
@@ -21,6 +22,10 @@ enum API {
     SPUHASSALEATTR = '/admin/product/spuSaleAttrList/',
     // 获取真个项目全部销售属性
     ALLSALEATTR_URL = '/admin/product/baseSaleAttrList',
+    // 追加一个新的SPu
+    ADDSPU_URL = '/admin/product/saveSpuInfo',
+    // 更新已有的SPU
+    UPPDATESPU_URL = '/admin/product/updateSpuInfo',
 }
 
 export const reqHasSPU = (page: number, limit: number, category3Id: string | number) =>
@@ -34,3 +39,11 @@ export const reqSpuSaleAttrList = (spuId: number) =>
     request.get<any, SpuSaleAttrResponseData>(API.SPUHASSALEATTR + spuId)
 
 export const reqAllSaleAttr = () => request.get<any, HasSaleAttrResponseData>(API.ALLSALEATTR_URL)
+
+export const reqAddORUpdateSpu = (data: SpuData) => {
+    if (data.id) {
+        request.put<any, any>(API.UPPDATESPU_URL, data)
+    } else {
+        request.post<any, any>(API.ADDSPU_URL, data)
+    }
+}
