@@ -1,4 +1,4 @@
-export interface DesponseData {
+export interface ResponseData {
     code: number
     message: string
     ok: boolean
@@ -13,7 +13,7 @@ export interface TradeMark {
 
 export type Records = TradeMark[]
 
-export interface TradeMarkResponseData extends DesponseData {
+export interface TradeMarkResponseData extends ResponseData {
     data: {
         records: Records
         total: number

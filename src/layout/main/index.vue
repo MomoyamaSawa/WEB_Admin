@@ -2,7 +2,9 @@
     <!-- 路由组件出口位置 -->
     <router-view v-slot="{ Component }">
         <transition name="fade" v-if="flag">
-            <component :is="Component"></component>
+            <div>
+                <component :is="Component"></component>
+            </div>
         </transition>
     </router-view>
 </template>
@@ -19,7 +21,6 @@ watch(
     (value) => {
         if (value) {
             flag.value = false
-            console.log('刷新了')
             // 更新完以后下一个渲染周期再让他回来，v-if是会销毁的
             nextTick(() => {
                 flag.value = true
