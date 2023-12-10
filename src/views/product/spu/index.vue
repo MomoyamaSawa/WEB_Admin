@@ -16,10 +16,16 @@
                 <el-table-column label="序号" type="index" align="center" width="80"></el-table-column>
                 <el-table-column prop="spuName" label="SPU名称" width="180"></el-table-column>
                 <el-table-column prop="description" label="SPU描述"></el-table-column>
-                <el-table-column prop="" label="操作">
+                <el-table-column prop="" label="操作" width="280">
                     <template #="{ row, $index }">
                         <el-button type="primary" size="default" icon="Plus" @click="" title="添加SKU"></el-button>
-                        <el-button type="primary" size="default" icon="Edit" @click="" title="修改SKU"></el-button>
+                        <el-button
+                            type="primary"
+                            size="default"
+                            icon="Edit"
+                            @click="updateSPU"
+                            title="修改SKU"
+                        ></el-button>
                         <el-button type="primary" size="default" icon="View" @click="" title="查看SKU列表"></el-button>
                         <el-button type="primary" size="default" icon="Delete" @click="" title="删除SKU"></el-button>
                     </template>
@@ -69,7 +75,6 @@ watch(
 const getHasSpu = (page = 1) => {
     pageNo.value = page
     reqHasSPU(pageNo.value, pageSize.value, categoryStore.c3Id).then((res: HasSpuResponseData) => {
-        console.log(res)
         records.value = res.data.records
         total.value = res.data.total
     })
@@ -84,6 +89,9 @@ const addSPU = () => {
 }
 const changeScene = (sceneNo: number) => {
     scene.value = sceneNo
+}
+const updateSPU = () => {
+    scene.value = 1
 }
 </script>
 
