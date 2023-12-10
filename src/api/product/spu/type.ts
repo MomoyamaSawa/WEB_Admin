@@ -63,7 +63,7 @@ export interface SaleAttrValue {
 
 export type spuSaleAttrList = SaleAttrValue[]
 
-export interface SaleAattr extends ResponseData {
+export interface SaleAttr {
     id?: number
     createTime: string
     updateTime: string
@@ -74,7 +74,7 @@ export interface SaleAattr extends ResponseData {
 }
 
 export interface SpuSaleAttrResponseData extends ResponseData {
-    data: SaleAattr[]
+    data: SaleAttr[]
 }
 
 export interface HasSaleAttr {

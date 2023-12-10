@@ -54,10 +54,45 @@
 </template>
 
 <script setup lang="ts" nmae="SpuForm">
+import { ref } from 'vue'
+import type {
+    SpuData,
+    HasSaleAttrResponseData,
+    SpuSaleAttrResponseData,
+    SpuImageResponseData,
+    ALLTradeMarkResponseData,
+    TradeMark,
+    SpuImage,
+    SaleAttr,
+    HasSaleAttr,
+} from '@/api/product/spu/type'
+import { reqSpuImageList, reqAllTrademark, reqSpuSaleAttrList, reqAllSaleAttr } from '@/api/product/spu'
 const cancel = () => {
     $emit('changeScene', 0)
 }
 let $emit = defineEmits(['changeScene'])
+let allTradeMark = ref<TradeMark[]>([])
+let imageList = ref<SpuImage[]>([])
+let saleAttr = ref<SaleAttr[]>([])
+let allSaleAttr = ref<HasSaleAttr[]>([])
+const initHasSpuData = (row: SpuData) => {
+    reqAllTrademark().then((res: ALLTradeMarkResponseData) => {
+        allTradeMark.value = res.data
+    })
+    reqSpuSaleAttrList(row.id as number).then((res: SpuSaleAttrResponseData) => {
+        saleAttr.value = res.data
+    })
+    reqSpuImageList(row.id as number).then((res: SpuImageResponseData) => {
+        imageList.value = res.data
+    })
+    reqAllSaleAttr().then((res: HasSaleAttrResponseData) => {
+        allSaleAttr.value = res.data
+    })
+}
+// 暴露给父组件
+defineExpose({
+    initHasSpuData,
+})
 </script>
 
 <style scoped></style>

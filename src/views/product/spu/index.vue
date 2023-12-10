@@ -23,7 +23,7 @@
                             type="primary"
                             size="default"
                             icon="Edit"
-                            @click="updateSPU"
+                            @click="updateSPU(row)"
                             title="修改SKU"
                         ></el-button>
                         <el-button type="primary" size="default" icon="View" @click="" title="查看SKU列表"></el-button>
@@ -44,7 +44,7 @@
             />
         </div>
         <!-- 添加/修改SPU -->
-        <SpuForm v-show="scene == 1" @changeScene="changeScene"></SpuForm>
+        <SpuForm ref="spu" v-show="scene == 1" @changeScene="changeScene"></SpuForm>
         <!-- 添加/修改SKU -->
         <SkuForm v-show="scene == 2"></SkuForm>
     </el-card>
@@ -57,6 +57,7 @@ import { HasSpuResponseData, Records } from '@/api/product/spu/type'
 import useCategoryStore from '@/store/modules/category'
 import SkuForm from './skuForm.vue'
 import SpuForm from './spuForm.vue'
+import type { SpuData } from '@/api/product/spu/type'
 const scene = ref<number>(0)
 let pageNo = ref<number>(1)
 let pageSize = ref<number>(3)
@@ -90,8 +91,12 @@ const addSPU = () => {
 const changeScene = (sceneNo: number) => {
     scene.value = sceneNo
 }
-const updateSPU = () => {
+// 获取子组件
+let spu = ref()
+const updateSPU = (row: SpuData) => {
     scene.value = 1
+    // 调用子组件方法
+    spu.value.initHasSpuData(row)
 }
 </script>
 
