@@ -18,11 +18,12 @@
         </el-form-item>
         <el-form-item label="SPU图片">
             <el-upload
-                v-model:file-list="fileList"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                v-model:file-list="imageList"
+                action="/api/admin/product/fileUpload"
                 list-type="picture-card"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :before-upload="handlerUpload"
             >
                 <el-icon>
                     <Plus />
@@ -70,6 +71,7 @@ import type {
     HasSaleAttr,
 } from '@/api/product/spu/type'
 import { reqSpuImageList, reqAllTrademark, reqSpuSaleAttrList, reqAllSaleAttr } from '@/api/product/spu'
+import { ElMessage } from 'element-plus'
 const cancel = () => {
     $emit('changeScene', 0)
 }
@@ -96,7 +98,12 @@ const initHasSpuData = (row: SpuData) => {
         saleAttr.value = res.data
     })
     reqSpuImageList(row.id as number).then((res: SpuImageResponseData) => {
-        imageList.value = res.data
+        imageList.value = res.data.map((item) => {
+            return {
+                name: item.imgName,
+                url: item.imgUrl,
+            }
+        })
     })
     reqAllSaleAttr().then((res: HasSaleAttrResponseData) => {
         allSaleAttr.value = res.data
@@ -106,6 +113,33 @@ const initHasSpuData = (row: SpuData) => {
 defineExpose({
     initHasSpuData,
 })
+
+// 照片墙
+let dialogVisible = ref<boolean>(false)
+let dialogImageUrl = ref<string>('')
+const handlePictureCardPreview = (file: any) => {
+    dialogImageUrl.value = file.url
+    dialogVisible.value = true
+}
+const handleRemove = (file: any) => {
+    imageList.value = imageList.value.filter((item) => item.url !== file.url)
+}
+const handlerUpload = (file: any) => {
+    // 约束图片大小和类型
+    const isJPG = file.type === 'image/jpeg'
+    const isPNG = file.type === 'image/png'
+    const isGif = file.type === 'image/gif'
+    const isLt2M = file.size / 1024 / 1024 < 3
+    if (!isJPG && !isPNG && !isGif) {
+        ElMessage.error('上传图片只能是 JPG/PNG 格式!')
+        return false
+    }
+    if (!isLt2M) {
+        ElMessage.error('上传图片大小不能超过 3MB!')
+        return false
+    }
+    return true
+}
 </script>
 
 <style scoped></style>
