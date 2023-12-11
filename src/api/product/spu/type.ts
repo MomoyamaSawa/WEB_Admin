@@ -70,7 +70,7 @@ export interface SaleAttr {
     createTime?: string
     updateTime?: string
     spuId?: number
-    baseSaleAttrId: number
+    baseSaleAttrId: number | string
     saleAttrName: string
     spuSaleAttrValueList: spuSaleAttrList
 }
@@ -81,7 +81,7 @@ export interface SpuSaleAttrResponseData extends ResponseData {
 
 export interface HasSaleAttr {
     id: number
-    attrName: string
+    name: string
 }
 
 export interface HasSaleAttrResponseData extends ResponseData {

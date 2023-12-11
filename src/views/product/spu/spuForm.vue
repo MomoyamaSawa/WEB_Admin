@@ -35,19 +35,53 @@
             </el-dialog>
         </el-form-item>
         <el-form-item label="SPU销售属性">
-            <el-select placeholder="请选择SPU销售属性">
-                <el-option label="华为"></el-option>
-                <el-option label="OPPO"></el-option>
-                <el-option label="Vivo"></el-option>
+            <el-select
+                v-model="saleAttrIdAndvalueName"
+                :placeholder="unSelectSaleAttr.length ? `还未选择${unSelectSaleAttr.length}个` : '无'"
+            >
+                <el-option
+                    v-for="(item, index) in unSelectSaleAttr"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="`${item.id}:${item.name}`"
+                ></el-option>
             </el-select>
-            <el-button type="primary" size="default" icon="Plus" @click="" style="margin-left: 10px">
+            <el-button
+                type="primary"
+                size="default"
+                icon="Plus"
+                @click="addSaleAttr"
+                style="margin-left: 10px"
+                :disabled="saleAttrIdAndvalueName ? false : true"
+            >
                 添加属性值
             </el-button>
-            <el-table border style="margin: 10px 0px">
+            <el-table border style="margin: 10px 0px" :data="saleAttr">
                 <el-table-column label="序号" type="index" align="center" width="80px"></el-table-column>
-                <el-table-column label="销售属性名称" width="120px"></el-table-column>
-                <el-table-column label="销售属性值"></el-table-column>
-                <el-table-column label="操作" width="120px"></el-table-column>
+                <el-table-column label="销售属性名称" width="120px" prop="saleAttrName"></el-table-column>
+                <el-table-column label="销售属性值">
+                    <template #="{ row, $index }">
+                        <el-tag
+                            v-for="(item, index) in row.spuSaleAttrValueList"
+                            :key="item.id"
+                            style="margin: 5px 5px"
+                            closable
+                        >
+                            {{ item.saleAttrValueName }}
+                        </el-tag>
+                        <el-button type="primary" size="small" icon="Plus" @click=""></el-button>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="120px">
+                    <template #="{ row, $index }">
+                        <el-button
+                            type="primary"
+                            size="small"
+                            icon="Delete"
+                            @click="saleAttr.splice($index, 1)"
+                        ></el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </el-form-item>
         <el-form-item>
@@ -58,7 +92,7 @@
 </template>
 
 <script setup lang="ts" nmae="SpuForm">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type {
     SpuData,
     HasSaleAttrResponseData,
@@ -139,6 +173,25 @@ const handlerUpload = (file: any) => {
         return false
     }
     return true
+}
+
+// 计算当前SPU还未拥有的销售属性
+let unSelectSaleAttr = computed(() => {
+    return allSaleAttr.value.filter((item) => {
+        return saleAttr.value.every((sale) => sale.saleAttrName !== item.name)
+    })
+})
+let saleAttrIdAndvalueName = ref<string>('')
+const addSaleAttr = () => {
+    const [baseSaleAttrId, saleAttrName] = saleAttrIdAndvalueName.value.split(':')
+    let newSaleAttr: SaleAttr = {
+        baseSaleAttrId,
+        saleAttrName,
+        spuSaleAttrValueList: [],
+    }
+    saleAttr.value.push(newSaleAttr)
+    // 清空收集的数据，显然这是一个引用，直接把那个数组里的也删了
+    saleAttrIdAndvalueName.value = ''
 }
 </script>
 
