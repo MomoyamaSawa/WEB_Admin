@@ -45,7 +45,7 @@
     <!-- 抽屉结构 -->
     <el-drawer v-model="drawer">
         <template #header>
-            <h4>添加用户</h4>
+            <h4>{{ userParams.id ? '更新用户' : '添加用户' }}</h4>
         </template>
         <template #default>
             <el-form ref="form" :rules="rules" :model="userParams">
@@ -55,7 +55,7 @@
                 <el-form-item label="用户昵称" prop="name">
                     <el-input placeholder="请输入用户昵称" v-model="userParams.name"></el-input>
                 </el-form-item>
-                <el-form-item label="用户密码" prop="password">
+                <el-form-item label="用户密码" prop="password" v-if="!userParams.id">
                     <el-input placeholder="请输入密码" v-model="userParams.password"></el-input>
                 </el-form-item>
             </el-form>
@@ -125,6 +125,7 @@ let userParams = reactive<User>({
 const addUser = () => {
     // 数据清空
     Object.assign(userParams, {
+        id: 0,
         username: '',
         name: '',
         password: '',
@@ -136,7 +137,19 @@ const addUser = () => {
     })
 }
 const editUser = (row: User) => {
+    // 数据清空
+    Object.assign(userParams, {
+        id: 0,
+        username: '',
+        name: '',
+        password: '',
+    })
+    // 清除警告捏
+    nextTick(() => {
+        form.value.clearValidate()
+    })
     drawer.value = true
+    Object.assign(userParams, row)
 }
 let form = ref()
 const confirmClick = () => {
@@ -147,11 +160,12 @@ const confirmClick = () => {
             reqAddOrUpdateUser(userParams)
                 .then((res: any) => {
                     drawer.value = false
-                    ElMessage.success('添加成功')
-                    getHasuser()
+                    ElMessage.success('成功')
+                    // 浏览器自动刷新，就看看是不是把自己账号信息改
+                    window.location.reload()
                 })
                 .catch((err: any) => {
-                    ElMessage.error('添加失败')
+                    ElMessage.error('失败')
                 })
         })
         .catch((err: any) => {
