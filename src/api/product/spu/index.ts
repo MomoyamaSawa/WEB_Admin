@@ -42,8 +42,8 @@ export const reqAllSaleAttr = () => request.get<any, HasSaleAttrResponseData>(AP
 
 export const reqAddORUpdateSpu = (data: SpuData) => {
     if (data.id) {
-        request.put<any, any>(API.UPPDATESPU_URL, data)
+        return request.post<any, any>(API.UPPDATESPU_URL, data)
     } else {
-        request.post<any, any>(API.ADDSPU_URL, data)
+        return request.post<any, any>(API.ADDSPU_URL, data)
     }
 }

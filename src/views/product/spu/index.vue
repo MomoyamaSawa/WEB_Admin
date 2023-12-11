@@ -87,14 +87,21 @@ const changeSize = () => {
 // SPU页面
 const addSPU = () => {
     scene.value = 1
+    spu.value.initAddSpu(categoryStore.c3Id)
 }
-const changeScene = (sceneNo: number) => {
-    scene.value = sceneNo
+const changeScene = (obj: any) => {
+    scene.value = obj.flag
+    if (obj.params == 'update') {
+        getHasSpu(pageNo.value)
+    } else if (obj.params == 'add') {
+        getHasSpu()
+    }
 }
 // 获取子组件
 let spu = ref()
 const updateSPU = (row: SpuData) => {
     scene.value = 1
+
     // 调用子组件方法
     spu.value.initHasSpuData(row)
 }

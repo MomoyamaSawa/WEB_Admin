@@ -94,7 +94,9 @@
             </el-table>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" size="default" @click="">保存</el-button>
+            <el-button type="primary" size="default" @click="save" :disabled="saleAttr.length > 0 ? false : true">
+                保存
+            </el-button>
             <el-button size="default" @click="cancel">取消</el-button>
         </el-form-item>
     </el-form>
@@ -113,10 +115,16 @@ import type {
     SaleAttr,
     HasSaleAttr,
 } from '@/api/product/spu/type'
-import { reqSpuImageList, reqAllTrademark, reqSpuSaleAttrList, reqAllSaleAttr } from '@/api/product/spu'
+import {
+    reqSpuImageList,
+    reqAllTrademark,
+    reqSpuSaleAttrList,
+    reqAllSaleAttr,
+    reqAddORUpdateSpu,
+} from '@/api/product/spu'
 import { ElMessage } from 'element-plus'
 const cancel = () => {
-    $emit('changeScene', 0)
+    $emit('changeScene', { flag: 0, params: 'update' })
 }
 let $emit = defineEmits(['changeScene'])
 let allTradeMark = ref<TradeMark[]>([])
@@ -152,10 +160,6 @@ const initHasSpuData = (row: SpuData) => {
         allSaleAttr.value = res.data
     })
 }
-// 暴露给父组件
-defineExpose({
-    initHasSpuData,
-})
 
 // 照片墙
 let dialogVisible = ref<boolean>(false)
@@ -225,6 +229,57 @@ const toLook = (row: SaleAttr) => {
     row.spuSaleAttrValueList.push(newSaleAttrValue)
     row.saleAttrValue = ''
 }
+
+const save = () => {
+    // 整理一下修改的参数
+    // 照片墙数据
+    SpuParams.value.spuImageList = imageList.value.map((item) => {
+        return {
+            imgUrl: item.url,
+            imgName: item.name,
+        }
+    })
+    // 销售属性的数据
+    SpuParams.value.spuSaleAttrList = saleAttr.value
+    console.log(SpuParams.value)
+    reqAddORUpdateSpu(SpuParams.value)
+        .then((res: any) => {
+            ElMessage.success('保存成功')
+            $emit('changeScene', { flag: 0, params: SpuParams.value.id ? 'update' : 'add' })
+        })
+        .catch((err: any) => {
+            ElMessage.error('保存失败')
+        })
+}
+
+// 添加SPU
+const initAddSpu = (c3Id: number | string) => {
+    // 清空数据
+    Object.assign(SpuParams.value, {
+        category3Id: '', //收集三级分类的ID
+        spuName: '', //SPU的名字
+        description: '', //SPU的描述
+        tmId: '', //品牌的ID
+        spuImageList: [],
+        spuSaleAttrList: [],
+    })
+    imageList.value = []
+    saleAttr.value = []
+    saleAttrIdAndvalueName.value = ''
+    SpuParams.value.category3Id = c3Id
+    reqAllTrademark().then((res: ALLTradeMarkResponseData) => {
+        allTradeMark.value = res.data
+    })
+    reqAllSaleAttr().then((res: HasSaleAttrResponseData) => {
+        allSaleAttr.value = res.data
+    })
+}
+
+// 暴露给父组件
+defineExpose({
+    initHasSpuData,
+    initAddSpu,
+})
 </script>
 
 <style scoped></style>
