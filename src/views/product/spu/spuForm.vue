@@ -66,10 +66,19 @@
                             :key="item.id"
                             style="margin: 5px 5px"
                             closable
+                            @close="row.spuSaleAttrValueList.splice(index, 1)"
                         >
                             {{ item.saleAttrValueName }}
                         </el-tag>
-                        <el-button type="primary" size="small" icon="Plus" @click=""></el-button>
+                        <el-input
+                            @blur="toLook(row)"
+                            v-model="row.saleAttrValue"
+                            v-if="row.flag == true"
+                            placeholder="请你输入属性值"
+                            size="small"
+                            style="width: 100px"
+                        ></el-input>
+                        <el-button v-else type="primary" size="small" icon="Plus" @click="toEdit(row)"></el-button>
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="120px">
@@ -192,6 +201,29 @@ const addSaleAttr = () => {
     saleAttr.value.push(newSaleAttr)
     // 清空收集的数据，显然这是一个引用，直接把那个数组里的也删了
     saleAttrIdAndvalueName.value = ''
+}
+const toEdit = (row: SaleAttr) => {
+    row.flag = true
+    row.saleAttrValue = ''
+}
+import type { SaleAttrValue } from '@/api/product/spu/type'
+const toLook = (row: SaleAttr) => {
+    row.flag = false
+    let newSaleAttrValue: SaleAttrValue = {
+        baseSaleAttrId: row.baseSaleAttrId,
+        saleAttrValueName: row.saleAttrValue,
+    }
+    // 非法判断
+    if (row.saleAttrValue.trim() == '') {
+        ElMessage.error('属性值不能为空')
+        return
+    }
+    if (row.spuSaleAttrValueList.find((item) => item.saleAttrValueName == row.saleAttrValue)) {
+        ElMessage.error('属性值不能重复')
+        return
+    }
+    row.spuSaleAttrValueList.push(newSaleAttrValue)
+    row.saleAttrValue = ''
 }
 </script>
 
