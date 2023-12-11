@@ -18,7 +18,13 @@
                 <el-table-column prop="description" label="SPU描述"></el-table-column>
                 <el-table-column prop="" label="操作" width="280">
                     <template #="{ row, $index }">
-                        <el-button type="primary" size="default" icon="Plus" @click="" title="添加SKU"></el-button>
+                        <el-button
+                            type="primary"
+                            size="default"
+                            icon="Plus"
+                            @click="addSku"
+                            title="添加SKU"
+                        ></el-button>
                         <el-button
                             type="primary"
                             size="default"
@@ -104,6 +110,11 @@ const updateSPU = (row: SpuData) => {
 
     // 调用子组件方法
     spu.value.initHasSpuData(row)
+}
+
+// 追加sku
+const addSku = () => {
+    scene.value = 2
 }
 </script>
 
