@@ -2,11 +2,13 @@
     <el-card style="height: 80px">
         <el-form :inline="true" class="form">
             <el-form-item label="用户名：">
-                <el-input placeholder="搜索用户名"></el-input>
+                <el-input v-model="search" placeholder="搜索用户名"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" size="default" @click="">搜索</el-button>
-                <el-button type="primary" size="default" @click="">重置</el-button>
+                <el-button type="primary" size="default" @click="searchUser" :disabled="search ? false : true">
+                    搜索
+                </el-button>
+                <el-button type="primary" size="default" @click="reset">重置</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -123,7 +125,7 @@ onMounted(() => {
     getHasuser()
 })
 const getHasuser = (pageNo = 1) => {
-    reqUserInfo(pageNo, pageSize.value).then((res: UserResponseData) => {
+    reqUserInfo(pageNo, pageSize.value, search.value).then((res: UserResponseData) => {
         userArr.value = res.data.records
         total.value = res.data.total
     })
@@ -313,6 +315,16 @@ const deleteSeleted = () => {
         .catch((err: any) => {
             ElMessage.error('失败')
         })
+}
+
+// 搜索
+let search = ref<string>('')
+const searchUser = () => {
+    getHasuser()
+}
+const reset = () => {
+    search.value = ''
+    getHasuser()
 }
 </script>
 
