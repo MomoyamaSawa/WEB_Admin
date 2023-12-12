@@ -21,7 +21,6 @@ import Setting from './setting/index.vue'
     display: flex;
     // 一左一右
     justify-content: space-between;
-    background: white;
     border-bottom: 1px solid #ccc;
 
     .tabbar_left {

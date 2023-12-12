@@ -1,7 +1,23 @@
 <template>
-    <el-button type="primary" icon="Refresh" circle size="small" @click="updateRefresh"></el-button>
-    <el-button type="primary" icon="FullScreen" circle size="small" @click="fullScreen"></el-button>
-    <el-button type="primary" icon="Setting" circle size="small" @click=""></el-button>
+    <el-button icon="Refresh" circle size="small" @click="updateRefresh"></el-button>
+    <el-button icon="FullScreen" circle size="small" @click="fullScreen"></el-button>
+    <el-popover placement="bottom" title="主题设置" :width="120" trigger="click">
+        <el-form>
+            <el-form-item label="暗黑模式">
+                <el-switch
+                    class="mt-2"
+                    inline-prompt
+                    v-model="value"
+                    active-icon="MoonNight"
+                    inactive-icon="Sunny"
+                    @change="changeDark"
+                />
+            </el-form-item>
+        </el-form>
+        <template #reference>
+            <el-button icon="Setting" circle size="small" @click=""></el-button>
+        </template>
+    </el-popover>
     <img :src="userStore.avatar" style="width: 24px; height: 24px; margin: 0px 10px; border-radius: 50%" />
     <!-- 下拉菜单 -->
     <el-dropdown>
@@ -51,6 +67,17 @@ const logout = () => {
         // 跳转到登陆页面，并且把当前页面的路径传递过去，登陆成功后跳转回来
         $router.push({ path: '/login', query: { redirect: $route.path } })
     })
+}
+
+// 颜色组件
+import { ref } from 'vue'
+
+let value = ref(false)
+const changeDark = (val: any) => {
+    // 获取根节点
+    let root = document.documentElement
+    // 判断html标签是否有类名dark
+    val ? (root.className = 'dark') : (root.className = '')
 }
 </script>
 
