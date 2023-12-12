@@ -81,16 +81,18 @@
                     <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
                         全选
                     </el-checkbox>
-                    <el-checkbox-group v-model="userRole" @change="handleChecked">
-                        <el-checkbox v-for="role in allRole" :key="role" :label="role">{{ role }}</el-checkbox>
+                    <el-checkbox-group v-model="userRoleId" @change="handleChecked">
+                        <el-checkbox v-for="(role, index) in allRole" :key="index" :label="role.id">
+                            {{ role.roleName }}
+                        </el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
             </el-form>
         </template>
         <template #footer>
             <div style="flex: auto">
-                <el-button @click="cancelClick">cancel</el-button>
-                <el-button type="primary" @click="confirmClick">confirm</el-button>
+                <el-button @click="drawer1 = false">取消</el-button>
+                <el-button type="primary" @click="confirmRoleClick">确认</el-button>
             </div>
         </template>
     </el-drawer>
@@ -98,8 +100,8 @@
 
 <script setup lang="ts" name="User">
 import { ref, onMounted, reactive, nextTick } from 'vue'
-import { reqUserInfo, reqAddOrUpdateUser } from '@/api/acl/user'
-import type { UserResponseData, Records, User } from '@/api/acl/user/type'
+import { reqUserInfo, reqAddOrUpdateUser, reqAllRole, reqSetUserRole } from '@/api/acl/user'
+import type { UserResponseData, Records, User, AllRole, AllRoleResponseData, SetRoleData } from '@/api/acl/user/type'
 import { ElMessage } from 'element-plus'
 // 初始化
 let pageNo = ref<number>(1)
@@ -206,22 +208,73 @@ const cancelClick = () => {
 // 分配角色
 let drawer1 = ref<boolean>(false)
 const setRoler = (row: User) => {
-    drawer1.value = true
-    // 存储已有用户信息
     Object.assign(userParams, row)
+    // 获取所有角色
+    reqAllRole(userParams.id as number)
+        .then((res: AllRoleResponseData) => {
+            allRole.value = res.data.allRolesList
+            userRole.value = res.data.assignRoles
+            drawer1.value = true
+            // 赋值 ID 数组
+            allRoleId.value = allRole.value.map((role) => role.id as number)
+            userRoleId.value = userRole.value.map((role) => role.id as number)
+            if (userRoleId.value.length === allRoleId.value.length) {
+                console.log('全选')
+                checkAll.value = true
+                isIndeterminate.value = false
+            } else if (userRoleId.value.length > 0) {
+                checkAll.value = false
+                isIndeterminate.value = true
+            } else {
+                checkAll.value = false
+                isIndeterminate.value = false
+            }
+        })
+        .catch((err: any) => {
+            ElMessage.error('失败')
+        })
 }
 let checkAll = ref<boolean>(false)
-const isIndeterminate = ref(true)
+const isIndeterminate = ref(false)
 const handleCheckAllChange = (val: any) => {
-    userRole.value = val ? allRole.value : []
+    userRoleId.value = val ? allRoleId.value : []
+    userRole.value = allRole.value.filter((role) => userRoleId.value.includes(role.id as number))
     isIndeterminate.value = false
 }
-let allRole = ref(['销售', '前台', '财务', 'boss'])
-let userRole = ref(['销售', '前台'])
+
+let allRole = ref<AllRole>([])
+let userRole = ref<AllRole>([])
+let allRoleId = ref<number[]>([])
+let userRoleId = ref<number[]>([])
 const handleChecked = (value: any) => {
-    let checkedCount = value.length
-    checkAll.value = checkedCount === allRole.value.length
-    isIndeterminate.value = checkedCount > 0 && checkedCount < allRole.value.length
+    userRoleId.value = value
+    userRole.value = allRole.value.filter((role) => userRoleId.value.includes(role.id as number))
+    if (userRoleId.value.length === allRoleId.value.length) {
+        checkAll.value = true
+        isIndeterminate.value = false
+    } else if (userRoleId.value.length > 0) {
+        checkAll.value = false
+        isIndeterminate.value = true
+    } else {
+        checkAll.value = false
+        isIndeterminate.value = false
+    }
+}
+
+const confirmRoleClick = () => {
+    let data: SetRoleData = {
+        userId: userParams.id as number,
+        roleIdList: userRoleId.value,
+    }
+    reqSetUserRole(data)
+        .then((res: SetRoleData) => {
+            drawer1.value = false
+            ElMessage.success('成功')
+            getHasuser(pageNo.value)
+        })
+        .catch((err: any) => {
+            ElMessage.error('失败')
+        })
 }
 </script>
 
