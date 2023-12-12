@@ -5,17 +5,27 @@
         <el-table-column prop="updateTime" label="修改时间" />
         <el-table-column label="操作">
             <template #default="{ row, $index }">
-                <el-button type="primary" size="small" @click="addPermission(row)"
-                    :disabled="row.level == 4 ? true : false">
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="addPermission(row)"
+                    :disabled="row.level == 4 ? true : false"
+                >
                     {{ row.level == 3 ? '添加功能' : '添加菜单' }}
                 </el-button>
-                <el-button type="primary" size="small" @click="editPermission(row)"
-                    :disabled="row.level == 1 ? true : false">
+                <el-button
+                    type="primary"
+                    size="small"
+                    @click="editPermission(row)"
+                    :disabled="row.level == 1 ? true : false"
+                >
                     编辑
                 </el-button>
-                <el-button type="danger" size="small" @click="" :disabled="row.level == 1 ? true : false">
-                    删除
-                </el-button>
+                <el-popconfirm :title="`确定删除${row.name}吗？`" width="260px" @confirm="confirmDelete(row)">
+                    <template #reference>
+                        <el-button type="danger" size="small" :disabled="row.level == 1 ? true : false">删除</el-button>
+                    </template>
+                </el-popconfirm>
             </template>
         </el-table-column>
     </el-table>
@@ -32,9 +42,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="cancel">取消</el-button>
-                <el-button type="primary" @click="save">
-                    确定
-                </el-button>
+                <el-button type="primary" @click="save">确定</el-button>
             </span>
         </template>
     </el-dialog>
@@ -42,9 +50,9 @@
 
 <script setup lang="ts" name="Permission">
 import { ref, onMounted, reactive } from 'vue'
-import { reqAllPermisstion, reqAddOrUpdateMenu } from '@/api/acl/menu'
+import { reqAllPermisstion, reqAddOrUpdateMenu, reqRemoveMenu } from '@/api/acl/menu'
 import type { PermisstionResponseData, PermisstionList, Permisstion } from '@/api/acl/menu/type'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 // 初始化
 onMounted(() => {
     getHasPermission()
@@ -82,16 +90,28 @@ let menuData = reactive({
     pid: 0,
 })
 const save = () => {
-    reqAddOrUpdateMenu(menuData).then((res) => {
-        getHasPermission()
-        dialogVisible.value = false
-        ElMessage.success('成功')
-    }).catch((err) => {
-        ElMessage.error('失败')
-    })
+    reqAddOrUpdateMenu(menuData)
+        .then((res) => {
+            getHasPermission()
+            dialogVisible.value = false
+            ElMessage.success('成功')
+        })
+        .catch((err) => {
+            ElMessage.error('失败')
+        })
 }
 const cancel = () => {
     dialogVisible.value = false
+}
+const confirmDelete = (row: Permisstion) => {
+    reqRemoveMenu(row.id as number)
+        .then((res) => {
+            getHasPermission()
+            ElMessage.success('成功')
+        })
+        .catch((err) => {
+            ElMessage.error('失败')
+        })
 }
 </script>
 
