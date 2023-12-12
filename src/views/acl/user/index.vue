@@ -12,9 +12,9 @@
     </el-card>
     <el-card style="margin: 10px 0px">
         <el-button type="primary" size="default" @click="addUser">添加用户</el-button>
-        <el-button type="danger" size="default" @click="">批量删除</el-button>
+        <el-button type="danger" size="default" @click="deleteSeleted">批量删除</el-button>
         <!-- 表格展示用户信息 -->
-        <el-table style="margin: 10px 0px" border :data="userArr">
+        <el-table @selection-change="selectChange" style="margin: 10px 0px" border :data="userArr">
             <el-table-column type="selection" align="center"></el-table-column>
             <el-table-column type="index" label="#" align="center"></el-table-column>
             <el-table-column label="用户名" align="center" prop="username" show-overflow-tooltip></el-table-column>
@@ -26,7 +26,11 @@
                 <template #="{ row, $index }">
                     <el-button type="warning" size="small" icon="User" @click="setRoler(row)">分配角色</el-button>
                     <el-button type="primary" size="small" icon="Edit" @click="editUser(row)">编辑</el-button>
-                    <el-button type="danger" size="small" icon="Delete" @click="">删除</el-button>
+                    <el-popconfirm :title="`你确定要删除${row.username}?`" width="260px" @confirm="deleteUser(row.id)">
+                        <template #reference>
+                            <el-button type="danger" size="small" icon="Delete">删除</el-button>
+                        </template>
+                    </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
@@ -100,7 +104,14 @@
 
 <script setup lang="ts" name="User">
 import { ref, onMounted, reactive, nextTick } from 'vue'
-import { reqUserInfo, reqAddOrUpdateUser, reqAllRole, reqSetUserRole } from '@/api/acl/user'
+import {
+    reqUserInfo,
+    reqAddOrUpdateUser,
+    reqAllRole,
+    reqSetUserRole,
+    reqRemoveUser,
+    reqSelectUser,
+} from '@/api/acl/user'
 import type { UserResponseData, Records, User, AllRole, AllRoleResponseData, SetRoleData } from '@/api/acl/user/type'
 import { ElMessage } from 'element-plus'
 // 初始化
@@ -269,6 +280,33 @@ const confirmRoleClick = () => {
     reqSetUserRole(data)
         .then((res: SetRoleData) => {
             drawer1.value = false
+            ElMessage.success('成功')
+            getHasuser(pageNo.value)
+        })
+        .catch((err: any) => {
+            ElMessage.error('失败')
+        })
+}
+
+// 删除用户
+const deleteUser = (id: number) => {
+    reqRemoveUser(id)
+        .then((res: any) => {
+            ElMessage.success('成功')
+            getHasuser(pageNo.value)
+        })
+        .catch((err: any) => {
+            ElMessage.error('失败')
+        })
+}
+let selectIds = ref<number[]>([])
+const selectChange = (val: any) => {
+    selectIds.value = val.map((item: User) => item.id as number)
+    console.log(selectIds.value)
+}
+const deleteSeleted = () => {
+    reqSelectUser(selectIds.value)
+        .then((res: any) => {
             ElMessage.success('成功')
             getHasuser(pageNo.value)
         })
