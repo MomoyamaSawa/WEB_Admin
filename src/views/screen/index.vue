@@ -2,7 +2,9 @@
     <div class="container">
         <!-- 数据大屏内容去 -->
         <div class="screen" ref="screen">
-            <div class="top">顶部</div>
+            <div class="top">
+                <Top />
+            </div>
             <div class="bottom">
                 <div class="left">左侧</div>
                 <div class="center">中间</div>
@@ -14,6 +16,7 @@
 
 <script setup lang="ts" name="Screen">
 import { ref, onMounted } from 'vue'
+import Top from './components/top/index.vue'
 /**
  * 进行适配
  */
@@ -44,9 +47,32 @@ window.onresize = () => {
         position: fixed;
         width: 1920px;
         height: 1080px;
-        background: red;
         left: 50%;
         top: 50%;
+
+        .top {
+            width: 100%;
+            height: 40px;
+        }
+
+        .bottom {
+            display: flex;
+
+            .right {
+                flex: 1;
+                height: 100%;
+            }
+
+            .left {
+                flex: 1;
+                height: 100%;
+            }
+
+            .center {
+                flex: 2;
+                height: 100%;
+            }
+        }
     }
 }
 </style>

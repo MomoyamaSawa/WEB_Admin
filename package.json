@@ -23,6 +23,7 @@
         "axios": "^1.6.2",
         "element-plus": "^2.4.3",
         "js-cookie": "^3.0.5",
+        "moment": "^2.29.4",
         "nprogress": "^0.2.0",
         "pinia": "^2.1.7",
         "stylelint-config-prettier": "^9.0.5",
