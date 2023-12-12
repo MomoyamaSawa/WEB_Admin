@@ -24,7 +24,7 @@
             <el-table-column label="更新时间" align="center" prop="updateTime" show-overflow-tooltip></el-table-column>
             <el-table-column label="操作" width="300px" align="center">
                 <template #="{ row, $index }">
-                    <el-button type="warning" size="small" icon="User" @click="">分配角色</el-button>
+                    <el-button type="warning" size="small" icon="User" @click="setRoler(row)">分配角色</el-button>
                     <el-button type="primary" size="small" icon="Edit" @click="editUser(row)">编辑</el-button>
                     <el-button type="danger" size="small" icon="Delete" @click="">删除</el-button>
                 </template>
@@ -42,7 +42,7 @@
             @current-change="getHasuser"
         />
     </el-card>
-    <!-- 抽屉结构 -->
+    <!-- 抽屉结构 用户新增和修改 -->
     <el-drawer v-model="drawer">
         <template #header>
             <h4>{{ userParams.id ? '更新用户' : '添加用户' }}</h4>
@@ -64,6 +64,33 @@
             <div style="flex: auto">
                 <el-button @click="cancelClick">取消</el-button>
                 <el-button type="primary" @click="confirmClick">确定</el-button>
+            </div>
+        </template>
+    </el-drawer>
+    <!-- 抽屉结构 职位分配 -->
+    <el-drawer v-model="drawer1">
+        <template #header>
+            <h4>分配用户角色</h4>
+        </template>
+        <template #default>
+            <el-form>
+                <el-form-item label-width="80px" label="用户名" v-model="userParams.username">
+                    <el-input v-model="userParams.username" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label-width="80px" label="职位列表">
+                    <el-checkbox v-model="checkAll" :indeterminate="isIndeterminate" @change="handleCheckAllChange">
+                        全选
+                    </el-checkbox>
+                    <el-checkbox-group v-model="userRole" @change="handleChecked">
+                        <el-checkbox v-for="role in allRole" :key="role" :label="role">{{ role }}</el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+            </el-form>
+        </template>
+        <template #footer>
+            <div style="flex: auto">
+                <el-button @click="cancelClick">cancel</el-button>
+                <el-button type="primary" @click="confirmClick">confirm</el-button>
             </div>
         </template>
     </el-drawer>
@@ -174,6 +201,27 @@ const confirmClick = () => {
 }
 const cancelClick = () => {
     drawer.value = false
+}
+
+// 分配角色
+let drawer1 = ref<boolean>(false)
+const setRoler = (row: User) => {
+    drawer1.value = true
+    // 存储已有用户信息
+    Object.assign(userParams, row)
+}
+let checkAll = ref<boolean>(false)
+const isIndeterminate = ref(true)
+const handleCheckAllChange = (val: any) => {
+    userRole.value = val ? allRole.value : []
+    isIndeterminate.value = false
+}
+let allRole = ref(['销售', '前台', '财务', 'boss'])
+let userRole = ref(['销售', '前台'])
+const handleChecked = (value: any) => {
+    let checkedCount = value.length
+    checkAll.value = checkedCount === allRole.value.length
+    isIndeterminate.value = checkedCount > 0 && checkedCount < allRole.value.length
 }
 </script>
 
