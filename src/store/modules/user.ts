@@ -7,8 +7,25 @@ import type { loginFormData, loginResponseData, userInfoReponseData } from '@/ap
 import type { UserStateData } from './types/types'
 import { getToken, setToken, removeToken } from '@/utils/token'
 // 引入路由
-import { constRoutes } from '@/router/routes'
+import { constRoutes, asnyRoutes, anyRoutes } from '@/router/routes'
+import router from '@/router'
+// 引入深拷贝方法
+import cloneDeep from 'lodash/cloneDeep'
 
+// 过滤当前用户需要展示的一异步路由
+function filyerAsyncRoutes(asnycRoute: any, routes: any) {
+    return asnycRoute.filter((item: any) => {
+        if (routes.includes(item.name)) {
+            if (item.children && item.children.length > 0) {
+                //硅谷333账号:product\trademark\attr\sku
+                item.children = filyerAsyncRoutes(item.children, routes)
+            }
+            return true
+        }
+    })
+}
+
+// 创建用户小仓库
 let useUserStore = defineStore('user', {
     state: (): UserStateData => {
         return {
@@ -22,7 +39,6 @@ let useUserStore = defineStore('user', {
         // 用户登录
         async userLogin(data: loginFormData) {
             let result: loginResponseData = await reqLogin(data)
-            console.log(result)
             // 登陆成功：token
             if (result.code === 200) {
                 this.token = result.data || null
@@ -42,6 +58,16 @@ let useUserStore = defineStore('user', {
             if (result.code === 200) {
                 this.username = result.data.name
                 this.avatar = result.data.avatar
+                console.log(this.username)
+                // 生成静态页面的动态路由，深拷贝，别把原本的改了
+                let userAsyncRoutes = filyerAsyncRoutes(cloneDeep(asnyRoutes), result.data.routes)
+                this.menuRoutes = [...constRoutes, ...userAsyncRoutes, ...anyRoutes]
+                // 目前路由器管理的只有常量路由：用户计算完毕异步路由、任意路由动态追加
+                let addRoutes = [...userAsyncRoutes, anyRoutes]
+                console.log(addRoutes)
+                addRoutes.forEach((route: any) => {
+                    router.addRoute(route)
+                })
                 return Promise.resolve()
             } else {
                 return Promise.reject(new Error(result.message))

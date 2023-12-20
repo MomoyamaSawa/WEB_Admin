@@ -1,7 +1,6 @@
-// 对外暴露配置路由
-// TODO 路由这边之后也改改吧qwq
+// 对外暴露配置路由（常量路由）：全部用户都可以访问到的路由
 export const constRoutes = [
-    // 这边有个动态导入import，可以实现懒加载节省xingneng
+    // 这边有个动态导入import，可以实现懒加载节省性能
     {
         path: '/login',
         component: () => import('@/views/login/index.vue'),
@@ -42,6 +41,19 @@ export const constRoutes = [
             icon: 'Platform',
         },
     },
+    {
+        path: '/404',
+        component: () => import('@/views/404/index.vue'),
+        name: '404',
+        meta: {
+            title: '404',
+            show: false,
+        },
+    },
+]
+
+// 异步路由：有权限的人有，有权限的没有
+export const asnyRoutes = [
     {
         path: '/acl',
         component: () => import('@/layout/index.vue'),
@@ -138,15 +150,10 @@ export const constRoutes = [
             },
         ],
     },
-    {
-        path: '/404',
-        component: () => import('@/views/404/index.vue'),
-        name: '404',
-        meta: {
-            title: '404',
-            show: false,
-        },
-    },
+]
+
+// 任意路由
+export const anyRoutes = [
     {
         path: '/:pathMatch(.*)*',
         redirect: '/404',

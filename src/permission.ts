@@ -24,7 +24,8 @@ router.beforeEach((to, from, next) => {
                 userStore
                     .userInfo()
                     .then(() => {
-                        next()
+                        // 刷新的时候是异步路由，获取到用户信息，动态加载的异步路由还没有加载完毕，出现空白效果，（router种记录了信息，但是组件还没准备好）所以加一个等待加载完毕
+                        next({ ...to })
                     })
                     .catch(() => {
                         // token过期 || 用户手动修改token
