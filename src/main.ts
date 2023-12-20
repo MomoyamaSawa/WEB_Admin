@@ -12,6 +12,8 @@ import router from './router'
 import pinia from './store'
 // 暗黑模式样式
 import 'element-plus/theme-chalk/dark/css-vars.css'
+// 引入自定义指令
+import { isHasButton } from './directive/has'
 
 const app = createApp(App)
 app.use(ElementPlus, {
@@ -20,5 +22,6 @@ app.use(ElementPlus, {
 app.use(gloablComponent)
 app.use(router)
 app.use(pinia)
+isHasButton(app)
 import './permission'
 app.mount('#app')

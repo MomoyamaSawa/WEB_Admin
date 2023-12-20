@@ -33,6 +33,7 @@ let useUserStore = defineStore('user', {
             menuRoutes: constRoutes,
             username: '',
             avatar: '',
+            buttons: [],
         }
     },
     actions: {
@@ -58,6 +59,7 @@ let useUserStore = defineStore('user', {
             if (result.code === 200) {
                 this.username = result.data.name
                 this.avatar = result.data.avatar
+                this.buttons = result.data.buttons
                 console.log(this.username)
                 // 生成静态页面的动态路由，深拷贝，别把原本的改了
                 let userAsyncRoutes = filyerAsyncRoutes(cloneDeep(asnyRoutes), result.data.routes)
