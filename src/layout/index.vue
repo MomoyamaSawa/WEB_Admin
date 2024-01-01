@@ -1,7 +1,7 @@
 <template>
     <div class="layout_container">
         <!-- 左侧菜单 -->
-        <div class="layout_slider">
+        <div class="layout_slider" :class="{ fold: layoutSettingStore.fold ? true : false }">
             <Logo></Logo>
             <!-- 展示菜单 -->
             <!-- 滚动组件 -->
@@ -63,6 +63,10 @@ let $route = useRoute()
             .el-menu {
                 border-right: none;
             }
+        }
+
+        &.fold {
+            width: $base-menu-min-width;
         }
     }
 

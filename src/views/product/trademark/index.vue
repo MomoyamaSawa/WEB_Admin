@@ -17,8 +17,12 @@
             <el-table-column label="操作">
                 <template #="{ row }">
                     <el-button type="primary" size="small" icon="Edit" @click="updateTrademark(row)"></el-button>
-                    <el-popconfirm :title="`您确定要删除${row.tmName}吗`" width="250px" icon="Delete"
-                        @confirm="deleteTrademark(row.id)">
+                    <el-popconfirm
+                        :title="`您确定要删除${row.tmName}吗`"
+                        width="250px"
+                        icon="Delete"
+                        @confirm="deleteTrademark(row.id)"
+                    >
                         <template #reference>
                             <el-button size="small" icon="Delete"></el-button>
                         </template>
@@ -27,9 +31,17 @@
             </el-table-column>
         </el-table>
         <!-- 分页器 -->
-        <el-pagination v-model:current-page="pageNo" v-model:page-size="pageSize" :page-sizes="[3, 5, 7, 9]" :small="true"
-            :background="true" layout="prev,pager,next,jumper,->,sizes,total" :total="total" @size-change="sizeChange"
-            @current-change="changePageNo" />
+        <el-pagination
+            v-model:current-page="pageNo"
+            v-model:page-size="pageSize"
+            :page-sizes="[3, 5, 7, 9]"
+            :small="true"
+            :background="true"
+            layout="prev,pager,next,jumper,->,sizes,total"
+            :total="total"
+            @size-change="sizeChange"
+            @current-change="changePageNo"
+        />
     </el-card>
     <!-- 对话框组件 -->
     <el-dialog v-model="isShowDialog" icon="" :title="trademarkparams.id ? '修改品牌' : '添加品牌'">
@@ -38,8 +50,13 @@
                 <el-input v-model="trademarkparams.tmName" placeholder="请输入品牌名称"></el-input>
             </el-form-item>
             <el-form-item label-width="100px" label="品牌LOGO" prop="logoUrl">
-                <el-upload class="avatar-uploader" action="/api/admin/product/fileUpload" :show-file-list="false"
-                    :on-success="handleAvatarSucess" :before-upload="handleAvatarUpload">
+                <el-upload
+                    class="avatar-uploader"
+                    action="/api/admin/product/fileUpload"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSucess"
+                    :before-upload="handleAvatarUpload"
+                >
                     <img v-if="trademarkparams.logoUrl" :src="trademarkparams.logoUrl" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon">
                         <Plus />
