@@ -8,7 +8,7 @@
             <el-scrollbar class="scrollbar">
                 <!-- 菜单组件 -->
                 <el-menu
-                    background-color="#001529"
+                    background-color="#2c2c2c"
                     text-color="white"
                     :default-active="$route.path"
                     :collapse="layoutSettingStore.fold ? true : false"

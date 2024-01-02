@@ -283,6 +283,8 @@ const confirmRoleClick = () => {
         .then((res: SetRoleData) => {
             drawer1.value = false
             ElMessage.success('成功')
+            // 浏览器自动刷新，就看看是不是把自己账号信息改
+            window.location.reload()
             getHasuser(pageNo.value)
         })
         .catch((err: any) => {

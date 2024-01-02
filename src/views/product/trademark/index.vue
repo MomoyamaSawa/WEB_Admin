@@ -1,9 +1,7 @@
 <template>
     <el-card class="box-card">
         <!-- 添加品牌按钮 -->
-        <el-button icon="Plus" type="primary" size="default" @click="addTrademark" v-has="`btn.Trademark.add`">
-            添加品牌
-        </el-button>
+        <el-button icon="Plus" type="primary" size="default" @click="addTrademark">添加品牌</el-button>
         <!-- 表格组件，用于展示品牌信息 -->
         <el-table style="margin: 10px 0px" border :data="trademarkArr">
             <!-- 默认展示数据用插槽，可以用插槽定义展示结构样式了 -->

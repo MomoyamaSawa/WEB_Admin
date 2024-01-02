@@ -11,6 +11,15 @@ export const constRoutes = [
         },
     },
     {
+        path: '/:pathMatch(.*)*',
+        redirect: '/404',
+        name: 'any',
+        meta: {
+            title: '任意路由',
+            show: false,
+        },
+    },
+    {
         path: '/',
         component: () => import('@/layout/index.vue'),
         name: 'layout',
