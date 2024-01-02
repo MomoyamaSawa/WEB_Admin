@@ -7,7 +7,7 @@ import type { loginFormData, loginResponseData, userInfoReponseData } from '@/ap
 import type { UserStateData } from './types/types'
 import { getToken, setToken, removeToken } from '@/utils/token'
 // 引入路由
-import { constRoutes, asnyRoutes, anyRoutes } from '@/router/routes'
+import { constRoutes, asnyRoutes, anyRoute } from '@/router/routes'
 import router from '@/router'
 // 引入深拷贝方法
 import cloneDeep from 'lodash/cloneDeep'
@@ -63,9 +63,9 @@ let useUserStore = defineStore('user', {
                 console.log(this.username)
                 // 生成静态页面的动态路由，深拷贝，别把原本的改了
                 let userAsyncRoutes = filyerAsyncRoutes(cloneDeep(asnyRoutes), result.data.routes)
-                this.menuRoutes = [...constRoutes, ...userAsyncRoutes, ...anyRoutes]
+                this.menuRoutes = [...constRoutes, ...userAsyncRoutes, anyRoute]
                 // 目前路由器管理的只有常量路由：用户计算完毕异步路由、任意路由动态追加
-                let addRoutes = [...userAsyncRoutes, anyRoutes]
+                let addRoutes = [...userAsyncRoutes, anyRoute]
                 console.log(addRoutes)
                 addRoutes.forEach((route: any) => {
                     router.addRoute(route)

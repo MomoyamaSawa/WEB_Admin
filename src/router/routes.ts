@@ -11,15 +11,6 @@ export const constRoutes = [
         },
     },
     {
-        path: '/:pathMatch(.*)*',
-        redirect: '/404',
-        name: 'any',
-        meta: {
-            title: '任意路由',
-            show: false,
-        },
-    },
-    {
         path: '/',
         component: () => import('@/layout/index.vue'),
         name: 'layout',
@@ -41,6 +32,17 @@ export const constRoutes = [
         ],
     },
     {
+        //404
+        path: '/404',
+        component: () => import('@/views/404/index.vue'),
+        name: '404',
+        meta: {
+            title: '404',
+            hidden: true,
+            icon: 'DocumentDelete',
+        },
+    },
+    {
         path: '/screen',
         component: () => import('@/views/screen/index.vue'),
         name: 'screen',
@@ -48,15 +50,6 @@ export const constRoutes = [
             title: '数据大屏',
             show: true,
             icon: 'Platform',
-        },
-    },
-    {
-        path: '/404',
-        component: () => import('@/views/404/index.vue'),
-        name: '404',
-        meta: {
-            title: '404',
-            show: false,
         },
     },
 ]
@@ -162,14 +155,14 @@ export const asnyRoutes = [
 ]
 
 // 任意路由
-export const anyRoutes = [
-    {
-        path: '/:pathMatch(.*)*',
-        redirect: '/404',
-        name: 'any',
-        meta: {
-            title: '任意路由',
-            show: false,
-        },
+export const anyRoute = {
+    //任意路由
+    path: '/:pathMatch(.*)*',
+    redirect: '/404',
+    name: 'Any',
+    meta: {
+        title: '任意路由',
+        hidden: true,
+        icon: 'DataLine',
     },
-]
+}

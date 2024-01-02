@@ -12,6 +12,7 @@ let userStore = useUserStore(pinia)
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
     nprogress.start()
+    console.log('to', to)
     let token = userStore.token
     if (token) {
         if (to.path === '/login') {
